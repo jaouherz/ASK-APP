@@ -35,7 +35,7 @@ public class User implements UserDetails {
     private String password;
     private String bio;
     private String username ;
-private String none;
+
     private boolean isactive ;
     @ManyToOne
     @JoinColumn(name = "user_image")
