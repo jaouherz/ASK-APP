@@ -10,11 +10,10 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Data
 @SuperBuilder
-
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class Student extends User {
-    @Builder.Default
-    private Role role = Role.STUD;
-    private  String classe ;
+private String classse ;
+
+
 }

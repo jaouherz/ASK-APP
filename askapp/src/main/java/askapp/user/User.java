@@ -20,7 +20,6 @@ import java.util.List;
 @Data
 @SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "_User")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -34,8 +33,7 @@ public class User implements UserDetails {
     private String email;
     private String password;
     private String bio;
-    private String username ;
-
+    private String usernamez ;
     private boolean isactive ;
     @ManyToOne
     @JoinColumn(name = "user_image")
@@ -47,10 +45,6 @@ public class User implements UserDetails {
     @JsonManagedReference
     private List<Token> tokens;
 
-    @JsonIgnore
-    @ManyToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "manager_id")
-    private User manager;
 
 
     @Override

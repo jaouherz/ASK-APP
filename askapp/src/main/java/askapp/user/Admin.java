@@ -10,11 +10,10 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Data
 @SuperBuilder
-@NoArgsConstructor
 @AllArgsConstructor
+
 public class Admin extends User {
 
-    @Builder.Default
-    private Role role = Role.ADMIN;
+
 
 }

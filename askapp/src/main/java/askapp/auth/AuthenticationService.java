@@ -7,7 +7,10 @@ import askapp.file.fileService;
 import askapp.token.Token;
 import askapp.token.TokenRepository;
 import askapp.token.TokenType;
-import askapp.user.User;
+import askapp.user.*;
+import askapp.user.usersrepo.AdminRepo;
+import askapp.user.usersrepo.ProfRepo;
+import askapp.user.usersrepo.StudRepo;
 import askapp.user.usersrepo.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +24,15 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
     private final UserRepository repository;
-
+    private final AdminRepo Adminrep  ;
+    private final ProfRepo Profrep;
+    private final StudRepo Studrep ;
 
     private final fileService Fileservice;
 
@@ -38,21 +44,67 @@ public class AuthenticationService {
     private String idimage;
 
     public registerresponse register(RegisterRequest request) throws Exception {
-        User user1 = null;
+        User user = null;
+
         var existingUser = repository.findByEmail(request.getEmail());
-        var user = User.builder()
-                .nom(request.getNom())
-                .prenom(request.getPrenom())
-                .email(request.getEmail())
-                .manager(user1)
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
-                .build();
+        if (existingUser.isPresent()) {
+            return registerresponse.builder().msg("The user already exists.").build();
+        }
 
-        var savedUser = repository.save(user);
+        String username = request.getUsername();
+        if (username == null || username.isEmpty()) {
+            username = generateUniqueUsername(request.getRole());
+        }
+
+        var existingUsername = repository.findByUsernamez(username);
+        if (existingUsername.isPresent()) {
+            return registerresponse.builder().msg("The username already exists.").build();
+        }
+
+        // Use a single variable 'user' for different roles
+        if (request.getRole() == Role.ADMIN) {
+            user = Admin.builder()
+                    .nom(request.getNom())
+                    .prenom(request.getPrenom())
+                    .email(request.getEmail())
+                    .bio(request.getBio())
+                    .usernamez(username)
+                    .isactive(true)
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .role(Role.ADMIN)
+                    .build();
+            user = Adminrep.save((Admin) user);
+        } else if (request.getRole() == Role.PROF) {
+            user = Profesor.builder()
+                    .nom(request.getNom())
+                    .prenom(request.getPrenom())
+                    .email(request.getEmail())
+                    .bio(request.getBio())
+                    .usernamez(username)
+                    .isactive(true)
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .role(Role.PROF)
+                    .build();
+            user = Profrep.save((Profesor) user);
+        } else if (request.getRole() == Role.STUD) {
+            user = Student.builder()
+                    .nom(request.getNom())
+                    .prenom(request.getPrenom())
+                    .email(request.getEmail())
+                    .bio(request.getBio())
+                    .usernamez(username)
+                    .isactive(true)
+                    .classse(request.getClasse())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .role(Role.STUD)
+                    .build();
+            user = Studrep.save((Student) user);
+        }
+
+        // Save user and generate token
         var jwtToken = jwtService.generateToken(user);
+        saveUserToken(user, jwtToken);
 
-        saveUserToken(savedUser, jwtToken);
         return registerresponse.builder()
                 .token(jwtToken)
                 .nom(user.getNom())
@@ -61,6 +113,16 @@ public class AuthenticationService {
                 .password(user.getPassword())
                 .role(user.getRole())
                 .build();
+    }
+
+
+    private String generateUniqueUsername(Role role) {
+        String username;
+        do {
+            int randomNum = 1000 + new Random().nextInt(9000);
+            username = role.name().toLowerCase() + randomNum;
+        } while (repository.findByUsernamez(username).isPresent());
+        return username;
     }
 
     public changepasswordresponse changePassword(changepasswordrequest request) throws Exception {
@@ -194,10 +256,7 @@ public class AuthenticationService {
 
             userinfo.setPassword(user.getPassword());
             userinfo.setRole(user.getRole());
-            if (user.getImage() != null) {
-                userinfo.setImageid(user.getImage().getId());
-                userinfo.setFiletype(user.getImage().getFileType());
-            }
+
 
             userinfos.add(userinfo);
         }
@@ -212,7 +271,7 @@ public class AuthenticationService {
             User user = userOptional.get();
             List<Token> tokens = tokenRepository.findByUser(user);
             tokenRepository.deleteAll(tokens);
-            user.setManager(null);
+
             repository.save(user);
             repository.delete(user);
         } else {
@@ -223,9 +282,7 @@ public class AuthenticationService {
     public User updateUser(Long id, RegisterRequest newUser) throws Exception {
         User user = repository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + id));
-        if (newUser.getImage() != null) {
-            this.idimage = user.getImage().getId();
-        }
+
         if (newUser.getNom() != null) {
             user.setNom(newUser.getNom());
         }
@@ -239,15 +296,8 @@ public class AuthenticationService {
             user.setRole(newUser.getRole());
         }
 
-        if (newUser.getImage() != null) {
-            user.setImage(newUser.getImage());
-        }
-        User user4 = repository.save(user);
-        if (newUser.getImage() != null && this.idimage != null) {
-            Fileservice.deleteAttachment(this.idimage);
 
-        }
-        return user4;
+        return user;
     }
 
     public userinfo finduserById2(Long id) {
@@ -262,10 +312,7 @@ public class AuthenticationService {
 
         userinfo.setPassword(user3.getPassword());
         userinfo.setRole(user3.getRole());
-        if (user3.getImage() != null) {
-            userinfo.setImageid(user3.getImage().getId());
-            userinfo.setFiletype(user3.getImage().getFileType());
-        }
+
 
         return userinfo;
     }
@@ -284,8 +331,7 @@ public class AuthenticationService {
         user.setEmail(user1.getEmail());
         user.setPassword(user1.getPassword());
         user.setRole(user1.getRole());
-        user.setImageid(user1.getImage().getId());
-        user.setFiletype(user1.getImage().getFileType());
+
         return user;
     }
 

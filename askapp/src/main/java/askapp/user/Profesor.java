@@ -11,12 +11,11 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 
-@NoArgsConstructor
+
 @AllArgsConstructor
 public class Profesor extends User {
 
-    @Builder.Default
-    private Role role = Role.PROF;
+
 
 
 }
