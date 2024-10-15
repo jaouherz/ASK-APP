@@ -14,6 +14,7 @@ import askapp.user.usersrepo.StudRepo;
 import askapp.user.usersrepo.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.CloseableThreadContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -51,7 +52,7 @@ public class AuthenticationService {
             return registerresponse.builder().msg("The user already exists.").build();
         }
 
-        String username = request.getUsername();
+        String username = request.getUsernamez();
         if (username == null || username.isEmpty()) {
             username = generateUniqueUsername(request.getRole());
         }
@@ -279,7 +280,6 @@ public class AuthenticationService {
     public User updateUser(Long id, RegisterRequest newUser) throws Exception {
         User user = repository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + id));
-
         if (newUser.getNom() != null) {
             user.setNom(newUser.getNom());
         }
@@ -293,20 +293,39 @@ public class AuthenticationService {
             }
             user.setEmail(newUser.getEmail());
         }
-        if (newUser.getUsername() != null) {
-            var existingUsername = repository.findByUsernamez(newUser.getUsername());
+
+        // we have to add student filds here
+        if (user instanceof Student) {
+            if (newUser.getClassse() != null) {
+                ((Student) user).setClassse(newUser.getClassse());
+            }
+        }
+        //hedhi for profffesor
+        if (user instanceof Profesor) {
+           // if () {
+
+           //}
+        }
+        //hedhi for admin
+
+        if (user instanceof Admin ) {
+            // if () {
+
+            //}
+        }
+
+        if (newUser.getUsernamez() != null) {
+            var existingUsername = repository.findByUsernamez(newUser.getUsernamez());
             if (existingUsername.isPresent() && !existingUsername.get().getId().equals(id)) {
                 throw new Exception("The username is already in use by another user.");
             }
-            user.setUsernamez(newUser.getUsername());
+            user.setUsernamez(newUser.getUsernamez());
         }
 
-        if (newUser.getRole() != null) {
-            user.setRole(newUser.getRole());
-        }
 
         return repository.save(user);
     }
+
 
     public userinfo finduserById2(Long id) {
         User user3 = null;

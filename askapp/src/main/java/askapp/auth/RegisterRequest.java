@@ -19,6 +19,8 @@ public class RegisterRequest {
     private Role role;
     private String classe;
     private String bio;
-    private String username ;
+    private String usernamez ;
     private boolean isactive ;
+    private String classse ;
+
 }
