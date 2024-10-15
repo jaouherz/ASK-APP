@@ -95,68 +95,14 @@ public class AuthenticationController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id,
-                                           @RequestParam(required = false) MultipartFile image,
-                                           @RequestParam(required = false) String nom,
-                                           @RequestParam(required = false) String prenom,
-                                           @RequestParam(required = false) String email,
-
-                                           @RequestParam(required = false) String sexe,
-                                           @RequestParam(required = false) String numtel,
-
-                                           @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                           String dateNaissance,
-                                           @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") String dateRecrutement,
-                                           @RequestParam(required = false) String situationFam,
-                                           @RequestParam(required = false) String nbEnfant,
-                                           @RequestParam(required = false) String adresse,
-                                           @RequestParam(required = false) String service,
-                                           @RequestParam(required = false) String cnss,
-                                           @RequestParam(required = false) String rib,
-                                           @RequestParam(required = false) String ncin,
-                                           @RequestParam(required = false) String npassport,
-                                           @RequestParam(required = false) String manager,
-                                           @RequestParam(required = false) Role role,
-                                           @RequestParam(required = false) String position
-    ) throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date datenaissance = null;
-        if (dateNaissance != null) {
-            try {
-                datenaissance = dateFormat.parse(dateNaissance);
-            } catch (ParseException e) {
-                throw new RuntimeException("Failed to parse dateNaissance: " + dateNaissance, e);
-            }
-        }
-
-        Date daterecrutement = null;
-        if (dateRecrutement != null) {
-            try {
-                daterecrutement = dateFormat.parse(dateRecrutement);
-            } catch (ParseException e) {
-                throw new RuntimeException("Failed to parse dateRecrutement: " + dateRecrutement, e);
-            }
-        }
-        User user1 = serviceuser.finduserById(id);
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody RegisterRequest registerreq) {
         try {
-            file attachement1 = null;
-            if (image != null) {
-                attachement1 = Fileservice.saveAttachment(image);
-            }
-            RegisterRequest request = RegisterRequest.builder()
-                    .nom(nom)
-                    .prenom(prenom)
-                    .email(email)
-
-                    .role(role)
-                    .build();
-            User response = serviceuser.updateUser(id, request);
-            return ResponseEntity.ok(response);
+            User updatedUser = serviceuser.updateUser(id, registerreq);
+            return ResponseEntity.ok(updatedUser);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return ResponseEntity.badRequest().body(null);
         }
     }
-
     @GetMapping("/findbymail/{email}")
     public ResponseEntity<User> getUserBymail(@PathVariable("email") String email) {
         User user = serviceuser.finduserByemail(email);

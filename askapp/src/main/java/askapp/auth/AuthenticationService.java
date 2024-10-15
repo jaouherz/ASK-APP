@@ -287,14 +287,25 @@ public class AuthenticationService {
             user.setPrenom(newUser.getPrenom());
         }
         if (newUser.getEmail() != null) {
+            var existingEmail = repository.findByEmail(newUser.getEmail());
+            if (existingEmail.isPresent() && !existingEmail.get().getId().equals(id)) {
+                throw new Exception("The email is already in use by another user.");
+            }
             user.setEmail(newUser.getEmail());
         }
+        if (newUser.getUsername() != null) {
+            var existingUsername = repository.findByUsernamez(newUser.getUsername());
+            if (existingUsername.isPresent() && !existingUsername.get().getId().equals(id)) {
+                throw new Exception("The username is already in use by another user.");
+            }
+            user.setUsernamez(newUser.getUsername());
+        }
+
         if (newUser.getRole() != null) {
             user.setRole(newUser.getRole());
         }
 
-
-        return user;
+        return repository.save(user);
     }
 
     public userinfo finduserById2(Long id) {
@@ -311,6 +322,7 @@ public class AuthenticationService {
         userinfo.setPassword(user3.getPassword());
         userinfo.setRole(user3.getRole());
         userinfo.setIsactive(user3.isIsactive());
+
 
 
         return userinfo;
