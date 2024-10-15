@@ -61,7 +61,6 @@ public class AuthenticationService {
             return registerresponse.builder().msg("The username already exists.").build();
         }
 
-        // Use a single variable 'user' for different roles
         if (request.getRole() == Role.ADMIN) {
             user = Admin.builder()
                     .nom(request.getNom())
@@ -100,8 +99,6 @@ public class AuthenticationService {
                     .build();
             user = Studrep.save((Student) user);
         }
-
-        // Save user and generate token
         var jwtToken = jwtService.generateToken(user);
         saveUserToken(user, jwtToken);
 
@@ -309,9 +306,11 @@ public class AuthenticationService {
         userinfo.setNom(user3.getNom());
         userinfo.setPrenom(user3.getPrenom());
         userinfo.setEmail(user3.getEmail());
-
+        userinfo.setUsernamez(user3.getUsernamez());
+        userinfo.setBio(user3.getBio());
         userinfo.setPassword(user3.getPassword());
         userinfo.setRole(user3.getRole());
+        userinfo.setIsactive(user3.isIsactive());
 
 
         return userinfo;

@@ -15,12 +15,10 @@ public class userinfo {
     private String prenom;
     private String email;
     private String password;
-    private String sexe;
-
+    private String bio ;
     private Long id;
-
+    private String usernamez ;
     private Role role;
-    private String imageid;
-    private String filetype;
+    private boolean isactive ;
 }
 
