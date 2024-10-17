@@ -1,6 +1,5 @@
-package askapp.post;
+package askapp.community;
 
-import askapp.community.Community;
 import askapp.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,14 +14,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Post {
+public class Community {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime date_ajout;
-   @ManyToOne
-    private User whoposted ;
+    private String Title;
+    private String Description;
     @ManyToOne
-    private Community community ;
-    private boolean isvisible ;
+    private User usercreate;
+    private LocalDateTime createdatetime;
+    private  boolean isactive;
 }
