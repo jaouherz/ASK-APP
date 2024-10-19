@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class Comrequest {
 
 
-    private String Title;
-    private String Description;
+    private String title;
+    private String description;
     private Long usercreate;
 }
