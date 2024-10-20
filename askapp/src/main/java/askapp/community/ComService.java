@@ -3,6 +3,7 @@ package askapp.community;
 import askapp.exeption.UserNotFoundException;
 import askapp.user.User;
 import askapp.user.usersrepo.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,8 +30,29 @@ public final Commrepo commrepo;
                 .title(request.getTitle())
                 .createdatetime(LocalDateTime.now())
                 .usercreate(createdby)
-                .isactive(true)
+                .active(true)
                 .build();
 
         return commrepo.save(com);
-    }}
+    }
+
+
+
+
+    public Community updateCommunity(Community updatedCommunity) throws Exception {
+        Community existingCommunity = commrepo.findById(updatedCommunity.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Community not found"));
+
+        if (updatedCommunity.getTitle() != null && !updatedCommunity.getTitle().equals(existingCommunity.getTitle())) {
+            existingCommunity.setTitle(updatedCommunity.getTitle());
+        }
+
+        if (updatedCommunity.getDescription() != null && !updatedCommunity.getDescription().equals(existingCommunity.getDescription())) {
+            existingCommunity.setDescription(updatedCommunity.getDescription());
+        }
+
+
+
+        return commrepo.save(existingCommunity);
+    }
+}

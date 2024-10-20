@@ -25,5 +25,14 @@ public class Community {
     @ManyToOne
     private User usercreate;
     private LocalDateTime createdatetime;
-    private  boolean isactive;
+    private  boolean active;
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+
 }
