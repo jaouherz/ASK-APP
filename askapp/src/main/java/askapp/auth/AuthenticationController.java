@@ -18,21 +18,53 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    private final AuthenticationService serviceuser;
-    private final UserRepository repo;
+    private final AuthenticationService serviceuser ;
+    private final UserRepository repo ;
     private final fileService Fileservice;
+    private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
     public ResponseEntity<registerresponse> register(
-            @RequestBody RegisterRequest request
-    ) throws Exception {
-        return ResponseEntity.ok(serviceuser.register(request));
-    }
+            @RequestParam(required = false) String nom,
+            @RequestParam(required = false) String prenom,
+            @RequestParam(required = false) String email,
+
+            @RequestParam(required = false) String password,
+
+            @RequestParam(required = false) Role role,
+
+            @RequestParam(required = false) String classse,
+            @RequestParam(required = false) String bio,
+
+            @RequestParam(required = false) MultipartFile image){
+    try {
+
+        file pdp = Fileservice.saveAttachment(image);
+        RegisterRequest request = RegisterRequest.builder()
+                .nom(nom)
+                .prenom(prenom)
+                .email(email)
+                .bio(bio)
+                .image(pdp)
+
+
+                .classse(classse)
+                .password(password)
+                .role(role)
+                .build();
+        registerresponse saved = authenticationService.register(request);
+        return ResponseEntity.ok(saved);
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }}
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(
@@ -95,10 +127,38 @@ public class AuthenticationController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody RegisterRequest registerreq) {
+    public ResponseEntity<User> updateUser(
+            @PathVariable Long id,
+                                           @RequestParam(required = false) String nom,
+                                           @RequestParam(required = false) String prenom,
+                                           @RequestParam(required = false) String email,
+
+                                           @RequestParam(required = false) String password,
+
+
+                                           @RequestParam(required = false) String classse,
+                                           @RequestParam(required = false) String bio,
+
+                                           @RequestParam(required = false) MultipartFile image) {
         try {
-            User updatedUser = serviceuser.updateUser(id, registerreq);
-            return ResponseEntity.ok(updatedUser);
+            file pdp = null;
+            if (image != null) {
+                pdp =  Fileservice.saveAttachment(image);
+            }
+            RegisterRequest request = RegisterRequest.builder()
+                    .nom(nom)
+                    .prenom(prenom)
+                    .email(email)
+                    .bio(bio)
+                    .image(pdp)
+
+
+                    .classse(classse)
+                    .password(password)
+                    .build();
+            User saved = authenticationService.updateUser(id,request);
+            return ResponseEntity.ok(saved);
+
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
         }

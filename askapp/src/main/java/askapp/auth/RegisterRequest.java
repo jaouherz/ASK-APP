@@ -17,10 +17,10 @@ public class RegisterRequest {
     private String email;
     private String password;
     private Role role;
-    private String classe;
     private String bio;
     private String usernamez ;
-    private boolean isactive ;
     private String classse ;
+    private file image;
+
 
 }

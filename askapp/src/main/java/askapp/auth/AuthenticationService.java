@@ -70,6 +70,7 @@ public class AuthenticationService {
                     .bio(request.getBio())
                     .usernamez(username)
                     .isactive(true)
+                    .image(request.getImage())
                     .password(passwordEncoder.encode(request.getPassword()))
                     .role(Role.ADMIN)
                     .build();
@@ -81,6 +82,8 @@ public class AuthenticationService {
                     .email(request.getEmail())
                     .bio(request.getBio())
                     .usernamez(username)
+                    .image(request.getImage())
+
                     .isactive(true)
                     .password(passwordEncoder.encode(request.getPassword()))
                     .role(Role.PROF)
@@ -92,9 +95,11 @@ public class AuthenticationService {
                     .prenom(request.getPrenom())
                     .email(request.getEmail())
                     .bio(request.getBio())
+                    .image(request.getImage())
+
                     .usernamez(username)
                     .isactive(true)
-                    .classse(request.getClasse())
+                    .classse(request.getClassse())
                     .password(passwordEncoder.encode(request.getPassword()))
                     .role(Role.STUD)
                     .build();
@@ -108,6 +113,7 @@ public class AuthenticationService {
                 .nom(user.getNom())
                 .email(user.getEmail())
                 .prenom(user.getPrenom())
+
                 .password(user.getPassword())
                 .role(user.getRole())
                 .build();
@@ -286,6 +292,14 @@ public class AuthenticationService {
         if (newUser.getPrenom() != null) {
             user.setPrenom(newUser.getPrenom());
         }
+
+        if (newUser.getImage() != null) {
+
+
+
+            user.setImage(newUser.getImage());
+
+        }
         if (newUser.getEmail() != null) {
             var existingEmail = repository.findByEmail(newUser.getEmail());
             if (existingEmail.isPresent() && !existingEmail.get().getId().equals(id)) {
@@ -341,7 +355,7 @@ public class AuthenticationService {
         userinfo.setPassword(user3.getPassword());
         userinfo.setRole(user3.getRole());
         userinfo.setIsactive(user3.isIsactive());
-
+userinfo.setPdp(user3.getImage().getId());
 
 
         return userinfo;

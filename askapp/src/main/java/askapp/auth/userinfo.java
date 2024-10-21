@@ -1,5 +1,6 @@
 package askapp.auth;
 
+import askapp.file.file;
 import askapp.user.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,5 +21,6 @@ public class userinfo {
     private String usernamez ;
     private Role role;
     private boolean isactive ;
+    private String pdp ;
 }
 
