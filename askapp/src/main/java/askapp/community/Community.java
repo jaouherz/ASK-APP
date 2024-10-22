@@ -1,5 +1,6 @@
 package askapp.community;
 
+import askapp.file.file;
 import askapp.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -34,5 +35,7 @@ public class Community {
         this.active = active;
     }
 
-
+    @ManyToOne
+    @JoinColumn(name = "user_image")
+    private file image;
 }
