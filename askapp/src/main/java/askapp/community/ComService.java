@@ -39,8 +39,8 @@ public final Commrepo commrepo;
 
 
 
-    public Community updateCommunity(Community updatedCommunity) throws Exception {
-        Community existingCommunity = commrepo.findById(updatedCommunity.getId())
+    public Community updateCommunity(Long id, Comrequest updatedCommunity) throws Exception {
+        Community existingCommunity = commrepo.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Community not found"));
 
         if (updatedCommunity.getTitle() != null && !updatedCommunity.getTitle().equals(existingCommunity.getTitle())) {

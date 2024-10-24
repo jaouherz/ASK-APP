@@ -1,5 +1,6 @@
 package askapp.community;
 
+import askapp.file.file;
 import askapp.user.User;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
@@ -18,4 +19,5 @@ public class Comrequest {
     private String title;
     private String description;
     private Long usercreate;
+    private file image;
 }
