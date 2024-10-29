@@ -2,29 +2,25 @@ package askapp.post;
 
 import askapp.community.Community;
 import askapp.user.User;
-import jakarta.persistence.*;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
-
 @Data
-@SuperBuilder
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-public class Post {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class PostRequest {
+
+
     private LocalDateTime date_ajout;
-   @ManyToOne
+
     private User whoposted ;
-    @ManyToOne
+
     private Community community ;
-    private boolean isvisible ;
     private String content ;
-private typepost type;
+    private typepost type;
 }

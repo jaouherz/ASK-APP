@@ -55,4 +55,26 @@ public final Commrepo commrepo;
 
         return commrepo.save(existingCommunity);
     }
+    public void addMemberToCommunity(Long communityId, Long userId) throws Exception {
+        Community community = commrepo.findById(communityId)
+                .orElseThrow(() -> new EntityNotFoundException("Community not found"));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        boolean isAlreadyMember = community.getMembers().stream()
+                .anyMatch(member -> member.getUser().getId().equals(userId));
+
+        if (isAlreadyMember) {
+            throw new Exception("User is already a member of the community");
+        }
+
+        CommunityMember newMember = new CommunityMember();
+        newMember.setCommunity(community);
+        newMember.setUser(user);
+        newMember.setJoinedAt(LocalDateTime.now());
+
+        community.getMembers().add(newMember);
+        commrepo.save(community);
+    }
 }

@@ -4,6 +4,7 @@ import askapp.auth.RegisterRequest;
 import askapp.auth.registerresponse;
 import askapp.file.file;
 import askapp.file.fileService;
+import askapp.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ public class ComController {
     private final ComService servicecom;
     private final fileService Fileservice;
     private final Commrepo commrepo;
+    private final Commemberrepo commemberrepo;
 
     @PostMapping("/addcom")
     public ResponseEntity<Community> add(
@@ -89,6 +91,36 @@ public class ComController {
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteCommunity(@PathVariable Long id) {
+        try {
+            commrepo.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @PostMapping("/addMember")
+    public ResponseEntity<String> addMemberToCommunity(
+            @RequestParam Long communityId,
+            @RequestParam Long userId
+    ) {
+        try {
+            servicecom.addMemberToCommunity(communityId, userId);
+            return ResponseEntity.ok("User added to community");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error adding user to community");
+        }
+    }
+    @GetMapping("/members/{communityId}")
+    public ResponseEntity<List<CommunityMember>> getMembers(@PathVariable Long communityId) {
+        try {
+            List<CommunityMember> members = commemberrepo.findByCommunityId(communityId);
+            return ResponseEntity.ok(members);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

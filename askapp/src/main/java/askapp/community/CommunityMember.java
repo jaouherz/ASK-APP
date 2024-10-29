@@ -1,9 +1,9 @@
-package askapp.post;
+package askapp.community;
 
-import askapp.community.Community;
 import askapp.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -14,17 +14,20 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
-public class Post {
+public class CommunityMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime date_ajout;
-   @ManyToOne
-    private User whoposted ;
+
     @ManyToOne
-    private Community community ;
-    private boolean isvisible ;
-    private String content ;
-private typepost type;
+    @JoinColumn(name = "community_id")
+    private Community community;
+
+    @ManyToOne
+    private User user;
+
+    private LocalDateTime joinedAt;
+
 }
