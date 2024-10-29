@@ -16,11 +16,10 @@ import java.time.LocalDateTime;
 public class PostRequest {
 
 
-    private LocalDateTime date_ajout;
 
-    private User whoposted ;
+    private Long whoposted ;
 
-    private Community community ;
+    private Long community ;
     private String content ;
     private typepost type;
 }

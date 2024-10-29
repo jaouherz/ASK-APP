@@ -6,12 +6,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-@RestController
 @RequestMapping("/api/v1/post")
+@RestController
+
 @RequiredArgsConstructor
 public class PostController {
-    PostService postService;
+    private final PostService postService;
     @PostMapping("/create")
     public ResponseEntity<Post> createPost(@RequestBody PostRequest request) {
         try {
