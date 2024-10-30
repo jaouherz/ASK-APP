@@ -23,11 +23,11 @@ public class PostController {
         try {
 
             Post post = postService.addPost(request);
-            return new ResponseEntity("created", HttpStatus.CREATED);
+            return new ResponseEntity<>(post, HttpStatus.CREATED);
         } catch (UserNotFoundException  e) {
-            return new ResponseEntity("user not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            return new ResponseEntity("internalal baroblem ta3 zebi", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -56,15 +56,15 @@ public class PostController {
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Postinfo>> getPostsByUserId(@PathVariable Long userId) {
         List<Postinfo> posts = postService.getPostsByUserId(userId);
-        return new ResponseEntity<List<Postinfo>>(posts, HttpStatus.OK);
+        return new ResponseEntity<>(posts, HttpStatus.OK);
     }
-//    @GetMapping("/posts")
-//    public ResponseEntity<List<Post>> getAllposts() {
-//        try {
-//            List<Post> communities = postrepo.findAll();
-//            return ResponseEntity.ok(communities);
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
-//    }
+    @GetMapping("/posts")
+    public ResponseEntity<List<Post>> getAllposts() {
+        try {
+            List<Post> communities = postrepo.findAll();
+            return ResponseEntity.ok(communities);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }
