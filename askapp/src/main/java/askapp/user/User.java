@@ -1,6 +1,8 @@
 package askapp.user;
 
 import askapp.file.file;
+import askapp.post.Models.Comment;
+import askapp.post.Models.Like;
 import askapp.token.Token;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -45,7 +47,11 @@ public class User implements UserDetails {
     @JsonManagedReference
     private List<Token> tokens;
 
+    @OneToMany(mappedBy="user", cascade = CascadeType.REMOVE)
+    private List<Like> likes;
 
+    @OneToMany(mappedBy="user",cascade = CascadeType.REMOVE)
+    private List<Comment> comments;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

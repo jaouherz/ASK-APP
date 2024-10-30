@@ -1,6 +1,7 @@
-package askapp.post;
+package askapp.post.Models;
 
 import askapp.community.Community;
+import askapp.post.typepost;
 import askapp.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,5 +27,5 @@ public class Post {
     private Community community ;
     private boolean isvisible ;
     private String content ;
-private typepost type;
+    private typepost type;
 }

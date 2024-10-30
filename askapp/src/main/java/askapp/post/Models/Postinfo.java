@@ -1,6 +1,7 @@
-package askapp.post;
+package askapp.post.Models;
 
 import askapp.community.Community;
+import askapp.post.typepost;
 import askapp.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +21,4 @@ public class Postinfo {
     private String community ;
     private String content ;
     private typepost type;
-
-
 }

@@ -1,7 +1,11 @@
 package askapp.post;
 
-import askapp.community.Community;
 import askapp.exeption.UserNotFoundException;
+import askapp.post.Models.Post;
+import askapp.post.Models.PostRequest;
+import askapp.post.Models.Postinfo;
+import askapp.post.repositories.Postrepo;
+import askapp.post.services.PostService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -54,7 +58,7 @@ public class PostController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Postinfo>> getPostsByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<Postinfo>> getPostsByUserId(@PathVariable long userId) {
         List<Postinfo> posts = postService.getPostsByUserId(userId);
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
