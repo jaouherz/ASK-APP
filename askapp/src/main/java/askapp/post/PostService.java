@@ -76,12 +76,29 @@ public class PostService {
         }
         return content;
     }
-    public List<Post> getPostsByUserId(Long userId) {
+    public List<Postinfo> getPostsByUserId(Long userId) {
         List<Community> communities = communityMemberrep.findByUserId(userId)
                 .stream()
                 .map(CommunityMember::getCommunity)
                 .collect(Collectors.toList());
 
-        return postRepository.findByCommunityIn(communities);
+        List<Post> posts = postRepository.findByCommunityIn(communities);
+
+        // Map each Post to Postinfo
+        return posts.stream()
+                .map(this::mapToPostinfo)
+                .collect(Collectors.toList());
+    }
+
+    // Helper method to map Post to Postinfo
+    private Postinfo mapToPostinfo(Post post) {
+        return Postinfo.builder()
+                .id(post.getId())
+                .date_ajout(post.getDate_ajout())
+                .whoposted(post.getWhoposted().getNom()) // Assuming `whoPosted` is a User entity
+                .community(post.getCommunity().getTitle())
+                .content(post.getContent())
+                .type(post.getType()) // Assuming this matches `typepost`
+                .build();
     }
 }

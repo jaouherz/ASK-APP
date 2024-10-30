@@ -54,8 +54,8 @@ public class PostController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Post>> getPostsByUserId(@PathVariable Long userId) {
-        List<Post> posts = postService.getPostsByUserId(userId);
+    public ResponseEntity<List<Postinfo>> getPostsByUserId(@PathVariable Long userId) {
+        List<Postinfo> posts = postService.getPostsByUserId(userId);
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
     @GetMapping("/posts")
