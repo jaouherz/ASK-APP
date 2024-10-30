@@ -18,7 +18,10 @@ public class Comment {
 
     private String description;
     private Date date;
+//    @ManyToOne
+//    @JoinColumn(name="user")
+    private String username;
     @ManyToOne
-    @JoinColumn(name="user")
-    private User user;
+    @JoinColumn(name="post")
+    private Post post;
 }

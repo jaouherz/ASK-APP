@@ -1,7 +1,6 @@
 package askapp.post.Models;
 
 import askapp.community.Community;
-import askapp.post.typepost;
 import askapp.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @SuperBuilder
@@ -28,4 +28,10 @@ public class Post {
     private boolean isvisible ;
     private String content ;
     private typepost type;
+
+    @OneToMany(mappedBy="post", cascade = CascadeType.REMOVE)
+    private List<Like> likes;
+
+    @OneToMany(mappedBy="post",cascade = CascadeType.REMOVE)
+    private List<Comment> comments;
 }

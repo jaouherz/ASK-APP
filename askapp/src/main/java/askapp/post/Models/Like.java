@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "user_like")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,8 +15,12 @@ public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+//    @ManyToOne
+//    @JoinColumn(name="user")
+    private String username;
     @ManyToOne
-    @JoinColumn(name="user")
-    private User userId;
-    private long postId;
+    @JoinColumn(name="post")
+    private Post post;
+
+
 }

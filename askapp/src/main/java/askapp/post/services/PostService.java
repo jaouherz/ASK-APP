@@ -4,7 +4,7 @@ import askapp.community.*;
 import askapp.exeption.UserNotFoundException;
 import askapp.post.Models.Post;
 import askapp.post.Models.PostRequest;
-import askapp.post.Models.Postinfo;
+import askapp.post.Models.ModelsINFO.PostINFO;
 import askapp.post.blacklist.Blacklist;
 import askapp.post.blacklist.BlacklistRepository;
 import askapp.post.repositories.Postrepo;
@@ -12,6 +12,7 @@ import askapp.user.User;
 import askapp.user.usersrepo.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,7 +32,10 @@ public class PostService {
     private final Commrepo commrepo;
     private final ComService communityserv;
     private final ComService comService;
-
+    @Autowired
+    private LikeService likeService;
+    @Autowired
+    private CommentService commentService;
     public Post addPost(PostRequest request) throws Exception {
         User whoposted = userRepository.findById(request.getWhoposted())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
@@ -79,29 +83,27 @@ public class PostService {
         }
         return content;
     }
-    public List<Postinfo> getPostsByUserId(long userId) {
+    public List<PostINFO> getPostsByUserId(long userId) {
         List<Community> communities = communityMemberrep.findByUserId(userId)
                 .stream()
                 .map(CommunityMember::getCommunity)
                 .collect(Collectors.toList());
-
         List<Post> posts = postRepository.findByCommunityIn(communities);
-
-        // Map each Post to Postinfo
         return posts.stream()
                 .map(this::mapToPostinfo)
                 .collect(Collectors.toList());
     }
 
-    // Helper method to map Post to Postinfo
-    private Postinfo mapToPostinfo(Post post) {
-        return Postinfo.builder()
+    private PostINFO mapToPostinfo(Post post) {
+        return PostINFO.builder()
                 .id(post.getId())
                 .date_ajout(post.getDate_ajout())
-                .whoposted(post.getWhoposted().getNom()) // Assuming `whoPosted` is a User entity
+                .whoposted(post.getWhoposted().getNom())
                 .community(post.getCommunity().getTitle())
                 .content(post.getContent())
-                .type(post.getType()) // Assuming this matches `typepost`
+                .type(post.getType())
+                .likeList(likeService.getLikeByPost(post.getId()))
+                .commentList(commentService.getCommentByPost(post.getId()))
                 .build();
     }
 }

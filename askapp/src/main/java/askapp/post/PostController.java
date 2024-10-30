@@ -1,9 +1,9 @@
 package askapp.post;
 
 import askapp.exeption.UserNotFoundException;
+import askapp.post.Models.ModelsINFO.PostINFO;
 import askapp.post.Models.Post;
 import askapp.post.Models.PostRequest;
-import askapp.post.Models.Postinfo;
 import askapp.post.repositories.Postrepo;
 import askapp.post.services.PostService;
 import jakarta.persistence.EntityNotFoundException;
@@ -58,8 +58,8 @@ public class PostController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Postinfo>> getPostsByUserId(@PathVariable long userId) {
-        List<Postinfo> posts = postService.getPostsByUserId(userId);
+    public ResponseEntity<List<PostINFO>> getPostsByUserId(@PathVariable long userId) {
+        List<PostINFO> posts = postService.getPostsByUserId(userId);
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
     @GetMapping("/posts")
