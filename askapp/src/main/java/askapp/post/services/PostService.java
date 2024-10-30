@@ -1,14 +1,17 @@
-package askapp.post;
+package askapp.post.services;
 
 import askapp.community.*;
 import askapp.exeption.UserNotFoundException;
+import askapp.post.Models.Post;
+import askapp.post.Models.PostRequest;
+import askapp.post.Models.Postinfo;
 import askapp.post.blacklist.Blacklist;
 import askapp.post.blacklist.BlacklistRepository;
+import askapp.post.repositories.Postrepo;
 import askapp.user.User;
 import askapp.user.usersrepo.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -76,7 +79,7 @@ public class PostService {
         }
         return content;
     }
-    public List<Postinfo> getPostsByUserId(Long userId) {
+    public List<Postinfo> getPostsByUserId(long userId) {
         List<Community> communities = communityMemberrep.findByUserId(userId)
                 .stream()
                 .map(CommunityMember::getCommunity)

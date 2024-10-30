@@ -1,7 +1,7 @@
-package askapp.post;
+package askapp.post.repositories;
 
 import askapp.community.Community;
-import askapp.user.User;
+import askapp.post.Models.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

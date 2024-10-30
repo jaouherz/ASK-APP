@@ -1,6 +1,7 @@
-package askapp.post;
+package askapp.post.Models;
 
 import askapp.community.Community;
+import askapp.post.typepost;
 import askapp.user.User;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
@@ -14,11 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostRequest {
-
-
-
     private Long whoposted ;
-
     private Long community ;
     private String content ;
     private typepost type;

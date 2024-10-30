@@ -14,6 +14,4 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class Student extends User {
 private String classse ;
-
-
 }
