@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface Commemberrepo extends JpaRepository<CommunityMember, Long> {
     List<CommunityMember> findByCommunityId(Long communityId);
+    List<CommunityMember> findByUserId(Long userId);
 }

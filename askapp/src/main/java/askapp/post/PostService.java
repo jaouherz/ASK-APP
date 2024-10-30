@@ -1,7 +1,6 @@
 package askapp.post;
 
-import askapp.community.Commrepo;
-import askapp.community.Community;
+import askapp.community.*;
 import askapp.exeption.UserNotFoundException;
 import askapp.post.blacklist.Blacklist;
 import askapp.post.blacklist.BlacklistRepository;
@@ -9,19 +8,26 @@ import askapp.user.User;
 import askapp.user.usersrepo.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.Arrays.stream;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
-    private final BlacklistRepository blacklistRepository;
 
+    private final BlacklistRepository blacklistRepository;
+    private final Commemberrepo communityMemberrep;
     private final Postrepo postRepository;
     private final UserRepository userRepository;
     private final Commrepo commrepo;
+    private final ComService communityserv;
+    private final ComService comService;
 
     public Post addPost(PostRequest request) throws Exception {
         User whoposted = userRepository.findById(request.getWhoposted())
@@ -69,5 +75,13 @@ public class PostService {
             content = content.replaceAll("(?i)\\b" + blacklistWord.getWord() + "\\b", "***");
         }
         return content;
+    }
+    public List<Post> getPostsByUserId(Long userId) {
+        List<Community> communities = communityMemberrep.findByUserId(userId)
+                .stream()
+                .map(CommunityMember::getCommunity)
+                .collect(Collectors.toList());
+
+        return postRepository.findByCommunityIn(communities);
     }
 }

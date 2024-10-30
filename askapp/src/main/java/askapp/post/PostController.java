@@ -1,17 +1,23 @@
 package askapp.post;
 
+import askapp.community.Community;
 import askapp.exeption.UserNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 @RequestMapping("/api/v1/post")
 @RestController
 
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
+    private final Postrepo postrepo;
+
     @PostMapping("/create")
     public ResponseEntity<Post> createPost(@RequestBody PostRequest request) {
         try {
@@ -47,5 +53,18 @@ public class PostController {
         }
     }
 
-
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Post>> getPostsByUserId(@PathVariable Long userId) {
+        List<Post> posts = postService.getPostsByUserId(userId);
+        return new ResponseEntity<>(posts, HttpStatus.OK);
+    }
+    @GetMapping("/posts")
+    public ResponseEntity<List<Post>> getAllposts() {
+        try {
+            List<Post> communities = postrepo.findAll();
+            return ResponseEntity.ok(communities);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }
