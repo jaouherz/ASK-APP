@@ -15,9 +15,9 @@ public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-//    @ManyToOne
-//    @JoinColumn(name="user")
-    private String username;
+     @ManyToOne
+    @JoinColumn(name="user")
+    private User username;
     @ManyToOne
     @JoinColumn(name="post")
     private Post post;

@@ -41,7 +41,7 @@ public class LikeService {
     private LikeINFO mapToLikeinfo(Like like) {
         return LikeINFO.builder()
                 .id(like.getId())
-                .username(like.getUsername())
+                .username(like.getUsername().getUsername())
                 .postid(like.getPost().getId())
                 .build();
     }

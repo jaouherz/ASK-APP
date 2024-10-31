@@ -42,7 +42,7 @@ public class CommentService {
     private CommentINFO mapToCommentinfo(Comment comment) {
         return CommentINFO.builder()
                 .id(comment.getId())
-                .username(comment.getUsername())
+                .username(comment.getUsername().getUsernamez())
                 .description(comment.getDescription())
                 .date(comment.getDate())
                 .postid(comment.getPost().getId())
