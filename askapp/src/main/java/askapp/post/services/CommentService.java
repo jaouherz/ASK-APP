@@ -7,6 +7,8 @@ import askapp.post.Models.ModelsINFO.LikeINFO;
 import askapp.post.Models.Post;
 import askapp.post.repositories.CommentRepository;
 import askapp.post.repositories.Postrepo;
+import askapp.user.User;
+import askapp.user.usersrepo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +21,15 @@ public class CommentService {
     CommentRepository commentRepository;
     @Autowired
     Postrepo postrepo;
+    @Autowired
+    UserRepository userRepository;
     public Comment addComment(Comment comment){
 
         Post post = postrepo.findById(comment.getPost().getId()).orElseThrow(() -> new RuntimeException("Post not found"));
 
+        User user= userRepository.findById(comment.getUsername().getId()).orElseThrow(() -> new RuntimeException("User not found"));
         comment.setPost(post);
+        comment.setUsername(user);
 
         post.getComments().add(comment);
 
