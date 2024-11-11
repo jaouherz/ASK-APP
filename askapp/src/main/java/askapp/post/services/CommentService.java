@@ -23,6 +23,8 @@ public class CommentService {
 
         Post post = postrepo.findById(comment.getPost().getId()).orElseThrow(() -> new RuntimeException("Post not found"));
 
+        comment.setPost(post);
+
         post.getComments().add(comment);
 
         commentRepository.save(comment);
