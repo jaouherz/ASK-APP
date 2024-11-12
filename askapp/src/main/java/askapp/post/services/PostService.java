@@ -2,6 +2,8 @@ package askapp.post.services;
 
 import askapp.community.*;
 import askapp.exeption.UserNotFoundException;
+import askapp.file.file;
+import askapp.file.fileService;
 import askapp.post.Models.Post;
 import askapp.post.Models.PostRequest;
 import askapp.post.Models.ModelsINFO.PostINFO;
@@ -14,8 +16,10 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,25 +40,43 @@ public class PostService {
     private LikeService likeService;
     @Autowired
     private CommentService commentService;
-    public Post addPost(PostRequest request) throws Exception {
+    @Autowired
+    fileService fileservice;
+
+    public PostINFO addPost(PostRequest request) throws Exception {
+        // Fetch user and community
         User whoposted = userRepository.findById(request.getWhoposted())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Community community = commrepo.findById(request.getCommunity())
-                .orElseThrow(() -> new  UserNotFoundException("Community not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Community not found"));
+
+        // Filter content for blacklist words
         String filteredContent = filterContent(request.getContent());
+
+        // Create the post
         Post post = Post.builder()
                 .date_ajout(LocalDateTime.now())
                 .whoposted(whoposted)
                 .community(community)
                 .isvisible(true)
-                .content(filteredContent )
+                .content(filteredContent)
                 .type(request.getType())
                 .build();
 
-        return postRepository.save(post);
-    }
+        // Save images for the post
+        List<MultipartFile> images = request.getImages();  // Get images from the request
+        if (images != null && !images.isEmpty()) {
+            List<file> savedImages = new ArrayList<>();
+            for (MultipartFile image : images) {
+                file savedImage = fileservice.saveAttachment(image); // Save image using file service
+                savedImages.add(savedImage); // Add the image to a list (this won't modify the file entity)
+            }
+            post.setImages(savedImages); // Assuming the post entity has a List<file> images attribute
+        }
 
+        return mapToPostinfo(postRepository.save(post));
+    }
     public Post updatePost(Long postId, PostRequest updatedPost) throws Exception {
         Post existingPost = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("Post not found"));
@@ -104,6 +126,7 @@ public class PostService {
                 .type(post.getType())
                 .likeList(likeService.getLikeByPost(post.getId()))
                 .commentList(commentService.getCommentByPost(post.getId()))
+                .fileList(post.getImages())
                 .build();
     }
     public PostINFO getPostInfoById(Long postId) {

@@ -6,6 +6,7 @@ import askapp.post.Models.ModelsINFO.CommentINFO;
 import askapp.post.Models.ModelsINFO.PostINFO;
 import askapp.post.Models.Post;
 import askapp.post.Models.PostRequest;
+import askapp.post.Models.typepost;
 import askapp.post.repositories.Postrepo;
 import askapp.post.services.CommentService;
 import askapp.post.services.Commentrequest;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -29,16 +31,31 @@ public class PostController {
     @Autowired
     private CommentService commentService;
 
-    @PostMapping("/create")
-    public ResponseEntity<Post> createPost(@RequestBody PostRequest request) {
-        try {
+    @PostMapping("/addpost")
+    public ResponseEntity<PostINFO> addPost(
+            @RequestParam(required = false) String content,
+            @RequestParam(required = false) Long whoposted,
+            @RequestParam(required = false) Long community,
+            @RequestParam(required = false) typepost type,
+            @RequestParam(required = false) List<MultipartFile> images) {
 
-            Post post = postService.addPost(request);
-            return new ResponseEntity<>(post, HttpStatus.CREATED);
-        } catch (UserNotFoundException  e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        try {
+            // Build the PostRequest object
+            PostRequest postRequest = PostRequest.builder()
+                    .content(content)
+                    .whoposted(whoposted)
+                    .community(community)
+                    .type(type)
+                    .images(images)  // Add the images to the request
+                    .build();
+
+            // Pass the request to the service to handle the business logic
+            PostINFO savedPost = postService.addPost(postRequest);
+
+            return ResponseEntity.ok(savedPost);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
