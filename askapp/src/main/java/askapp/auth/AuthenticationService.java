@@ -189,6 +189,7 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .role(user.getRole())
                 .token(jwtToken).email(user.getEmail())
+                .id(user.getId().toString())
                 .build();
     }
 
