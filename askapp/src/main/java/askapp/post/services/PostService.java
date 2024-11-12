@@ -106,4 +106,10 @@ public class PostService {
                 .commentList(commentService.getCommentByPost(post.getId()))
                 .build();
     }
+    public PostINFO getPostInfoById(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        return mapToPostinfo(post);
+    }
 }
