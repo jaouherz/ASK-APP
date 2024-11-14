@@ -17,5 +17,5 @@ public class PostRequest {
     private Long community ;
     private String content ;
     private typepost type;
-    private List<MultipartFile> images;  // This should be in your request object
+    private List<MultipartFile> images;
 }
