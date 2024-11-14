@@ -24,7 +24,7 @@ public class Community {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
-    private String Description;
+    private String description;
     @ManyToOne
     private User usercreate;
     private LocalDateTime createdatetime;

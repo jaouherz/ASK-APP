@@ -25,15 +25,12 @@ public class ComController {
     private final Commemberrepo commemberrepo;
 
     @PostMapping("/addcom")
-    public ResponseEntity<Community> add(
+    public ResponseEntity<String> add(
             @RequestParam(required = false) String description,
             @RequestParam(required = false) String title,
             @RequestParam(required = false) Long usercreate,
-            @RequestParam(required = false) MultipartFile image
-    ){
-
+            @RequestParam(required = false) MultipartFile image){
    try {
-
         file pdp = Fileservice.saveAttachment(image);
         Comrequest request = Comrequest.builder()
                 .title(title)
@@ -41,8 +38,8 @@ public class ComController {
                 .usercreate(usercreate)
                 .image(pdp)
                 .build();
-        Community saved = servicecom.addCommunity(request);
-        return ResponseEntity.ok(saved);
+       Community saved = servicecom.addCommunity(request);
+        return ResponseEntity.ok("Community "+saved.getTitle()+" has been saved");
     } catch (Exception e) {
         e.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -121,6 +118,14 @@ public class ComController {
         try {
             List<CommunityMember> members = commemberrepo.findByCommunityId(communityId);
             return ResponseEntity.ok(members);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @GetMapping("/NotMembre/{id}")
+    public ResponseEntity<Optional<Community>> getNotMembers(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(servicecom.getRandomCommunityNotMember(id));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

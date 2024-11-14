@@ -53,8 +53,6 @@ public class AuthenticationController {
                 .email(email)
                 .bio(bio)
                 .image(pdp)
-
-
                 .classse(classse)
                 .password(password)
                 .role(role)

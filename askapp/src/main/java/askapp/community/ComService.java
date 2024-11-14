@@ -5,9 +5,12 @@ import askapp.user.User;
 import askapp.user.usersrepo.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -15,14 +18,14 @@ import java.util.Optional;
 public class ComService {
 public final Commrepo commrepo;
     private final UserRepository userRepository;
-
+    @Autowired
+    Commemberrepo commemberrepo;
     public Community addCommunity(Comrequest request) throws Exception {
         Optional<Community> community = commrepo.findByTitle(request.getTitle());
 
         if (community.isPresent()) {
-            throw new UserAlreadyExistsException(); // Rename your exception class appropriately
+            throw new UserAlreadyExistsException();
         }
-
         User createdby = userRepository.findById(request.getUsercreate())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
@@ -30,10 +33,12 @@ public final Commrepo commrepo;
                 .title(request.getTitle())
                 .createdatetime(LocalDateTime.now())
                 .usercreate(createdby)
+                .description(request.getDescription())
                 .active(true)
                 .build();
-
-        return commrepo.save(com);
+        Community community1 = this.commrepo.save(com);
+        this.addMemberToCommunity(community1.getId(),request.getUsercreate());
+        return community1;
     }
 
 
@@ -62,7 +67,7 @@ public final Commrepo commrepo;
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        boolean isAlreadyMember = community.getMembers().stream()
+        boolean isAlreadyMember = community.getMembers() != null && community.getMembers().stream()
                 .anyMatch(member -> member.getUser().getId().equals(userId));
 
         if (isAlreadyMember) {
@@ -74,7 +79,14 @@ public final Commrepo commrepo;
         newMember.setUser(user);
         newMember.setJoinedAt(LocalDateTime.now());
 
+        if (community.getMembers() == null) {
+            community.setMembers(new ArrayList<>());
+        }
+
         community.getMembers().add(newMember);
         commrepo.save(community);
+    }    public Optional<Community> getRandomCommunityNotMember(long id ){
+       return this.commrepo.findNotMemberCommunity(id);
     }
+
 }

@@ -37,7 +37,7 @@ public class Post {
     @OneToMany(mappedBy="post",cascade = CascadeType.REMOVE)
     private List<Comment> comments;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "post_id")  // This links the images to this post
+    @JoinColumn(name = "post_id")
     private List<file> images = new ArrayList<>();
 
     public void setImages(List<file> images) {
