@@ -1,14 +1,9 @@
 package askapp.user;
 
-import askapp.file.file;
-import askapp.post.Models.Comment;
-import askapp.post.Models.Like;
+import askapp.file.File;
 import askapp.token.Token;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -39,7 +34,7 @@ public class User implements UserDetails {
     private boolean isactive ;
     @ManyToOne
     @JoinColumn(name = "user_image")
-    private file image;
+    private File image;
     @Enumerated(EnumType.STRING)
     private Role role;
 

@@ -1,24 +1,18 @@
 package askapp.auth;
 
 
-import askapp.file.file;
-import askapp.file.fileService;
+import askapp.file.File;
+import askapp.file.FileService;
 import askapp.user.Role;
 import askapp.user.User;
 import askapp.user.usersrepo.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -27,7 +21,7 @@ public class AuthenticationController {
 
     private final AuthenticationService serviceuser ;
     private final UserRepository repo ;
-    private final fileService Fileservice;
+    private final FileService Fileservice;
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
@@ -45,8 +39,10 @@ public class AuthenticationController {
 
             @RequestParam(required = false) MultipartFile image){
     try {
-
-        file pdp = Fileservice.saveAttachment(image);
+        if (role == null) {
+            role = Role.STUD;
+        }
+        File pdp = Fileservice.saveAttachment(image);
         RegisterRequest request = RegisterRequest.builder()
                 .nom(nom)
                 .prenom(prenom)
@@ -73,8 +69,8 @@ public class AuthenticationController {
     }
 
     @GetMapping("/find/{id}")
-    public ResponseEntity<userinfo> getUserById(@PathVariable("id") Long id) {
-        userinfo user = serviceuser.finduserById2(id);
+    public ResponseEntity<Userinfo> getUserById(@PathVariable("id") Long id) {
+        Userinfo user = serviceuser.finduserById2(id);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
@@ -107,8 +103,8 @@ public class AuthenticationController {
     }
 
     @GetMapping("/users2")
-    public ResponseEntity<List<userinfo>> getAllusers2() throws Exception {
-        List<userinfo> userr = serviceuser.findAllUsers1();
+    public ResponseEntity<List<Userinfo>> getAllusers2() throws Exception {
+        List<Userinfo> userr = serviceuser.findAllUsers1();
         return new ResponseEntity<>(userr, HttpStatus.OK);
     }
 
@@ -139,7 +135,7 @@ public class AuthenticationController {
 
                                            @RequestParam(required = false) MultipartFile image) {
         try {
-            file pdp = null;
+            File pdp = null;
             if (image != null) {
                 pdp =  Fileservice.saveAttachment(image);
             }
@@ -170,8 +166,8 @@ public class AuthenticationController {
     }
 
     @GetMapping("/findbymail2/{email}")
-    public ResponseEntity<userinfo> getUserBymail2(@PathVariable("email") String email) {
-        userinfo user = serviceuser.finduserByemail2(email);
+    public ResponseEntity<Userinfo> getUserBymail2(@PathVariable("email") String email) {
+        Userinfo user = serviceuser.finduserByemail2(email);
 
         return new ResponseEntity<>(user, HttpStatus.OK);
 

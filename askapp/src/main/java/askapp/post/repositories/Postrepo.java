@@ -1,6 +1,6 @@
 package askapp.post.repositories;
 
-import askapp.community.Community;
+import askapp.community.models.Community;
 import askapp.post.Models.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 
