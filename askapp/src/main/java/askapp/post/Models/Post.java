@@ -2,7 +2,7 @@ package askapp.post.Models;
 
 import askapp.community.models.Community;
 import askapp.file.File;
-import askapp.user.User;
+import askapp.user.models.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

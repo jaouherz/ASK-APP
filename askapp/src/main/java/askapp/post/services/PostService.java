@@ -14,7 +14,7 @@ import askapp.post.Models.ModelsINFO.PostINFO;
 import askapp.post.blacklist.Blacklist;
 import askapp.post.blacklist.BlacklistRepository;
 import askapp.post.repositories.Postrepo;
-import askapp.user.User;
+import askapp.user.models.User;
 import askapp.user.usersrepo.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
@@ -48,17 +49,13 @@ public class PostService {
     FileService fileservice;
 
     public PostINFO addPost(PostRequest request) throws Exception {
-        // Fetch user and community
         User whoposted = userRepository.findById(request.getWhoposted())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Community community = communityRepository.findById(request.getCommunity())
                 .orElseThrow(() -> new EntityNotFoundException("Community not found"));
-
-        // Filter content for blacklist words
         String filteredContent = filterContent(request.getContent());
 
-        // Create the post
         Post post = Post.builder()
                 .date_ajout(LocalDateTime.now())
                 .whoposted(whoposted)
@@ -68,15 +65,14 @@ public class PostService {
                 .type(request.getType())
                 .build();
 
-        // Save images for the post
-        List<MultipartFile> images = request.getImages();  // Get images from the request
+        List<MultipartFile> images = request.getImages();
         if (images != null && !images.isEmpty()) {
             List<File> savedImages = new ArrayList<>();
             for (MultipartFile image : images) {
-                File savedImage = fileservice.saveAttachment(image); // Save image using File service
-                savedImages.add(savedImage); // Add the image to a list (this won't modify the File entity)
+                File savedImage = fileservice.saveAttachment(image);
+                savedImages.add(savedImage);
             }
-            post.setImages(savedImages); // Assuming the post entity has a List<File> images attribute
+            post.setImages(savedImages);
         }
 
         return mapToPostinfo(postRepository.save(post));
@@ -137,5 +133,12 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
         return mapToPostinfo(post);
+    }
+    public List<PostINFO> getPostsByCommunityId(long community_id){
+        Community community=communityRepository.findById(community_id);
+        List<Post> posts=postRepository.findByCommunity(community);
+        return posts.stream()
+                .map(this::mapToPostinfo)
+                .collect(Collectors.toList());
     }
 }

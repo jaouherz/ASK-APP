@@ -1,4 +1,4 @@
-package askapp.user;
+package askapp.user.models;
 
 import askapp.file.File;
 import askapp.token.Token;

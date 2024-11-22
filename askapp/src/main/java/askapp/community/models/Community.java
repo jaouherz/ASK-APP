@@ -1,7 +1,7 @@
 package askapp.community.models;
 
 import askapp.file.File;
-import askapp.user.User;
+import askapp.user.models.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,7 +38,7 @@ public class Community {
     }
 
     @ManyToOne
-    @JoinColumn(name = "user_image")
+    @JoinColumn(name = "community_image")
     private File image;
 
     @OneToMany(mappedBy = "community", cascade = CascadeType.ALL, orphanRemoval = true)

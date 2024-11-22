@@ -3,8 +3,8 @@ package askapp.auth;
 
 import askapp.file.File;
 import askapp.file.FileService;
-import askapp.user.Role;
-import askapp.user.User;
+import askapp.user.models.Role;
+import askapp.user.models.User;
 import askapp.user.usersrepo.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

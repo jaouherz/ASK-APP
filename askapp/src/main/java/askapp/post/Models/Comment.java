@@ -1,6 +1,6 @@
 package askapp.post.Models;
 
-import askapp.user.User;
+import askapp.user.models.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
-import java.util.Date;
+
 @Entity
 @Data
 @SuperBuilder

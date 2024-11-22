@@ -1,7 +1,7 @@
 package askapp.auth;
 
 import askapp.file.File;
-import askapp.user.Role;
+import askapp.user.models.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

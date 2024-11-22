@@ -1,4 +1,4 @@
-package askapp.user;
+package askapp.user.models;
 
 public enum Role {
 

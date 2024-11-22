@@ -7,7 +7,7 @@ import askapp.file.FileService;
 import askapp.token.Token;
 import askapp.token.TokenRepository;
 import askapp.token.TokenType;
-import askapp.user.*;
+import askapp.user.models.*;
 import askapp.user.usersrepo.AdminRepo;
 import askapp.user.usersrepo.ProfRepo;
 import askapp.user.usersrepo.StudRepo;

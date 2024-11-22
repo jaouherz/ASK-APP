@@ -1,7 +1,6 @@
 package askapp.community.models;
 
-import askapp.community.models.Community;
-import askapp.user.User;
+import askapp.user.models.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

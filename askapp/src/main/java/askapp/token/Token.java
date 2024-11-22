@@ -1,6 +1,6 @@
 package askapp.token;
 
-import askapp.user.User;
+import askapp.user.models.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

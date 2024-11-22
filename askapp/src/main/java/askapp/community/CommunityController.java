@@ -91,14 +91,9 @@ public class CommunityController {
         }
     }
     @GetMapping("/community/{id}")
-    public ResponseEntity<Community> getCommunityById(@PathVariable Long id) {
+    public ResponseEntity<CommunityINFO> getCommunityById(@PathVariable Long id) {
         try {
-            Optional<Community> community = communityRepository.findById(id);
-            if (community.isPresent()) {
-                return ResponseEntity.ok(community.get());
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
+            return new ResponseEntity<CommunityINFO>(servicecom.getCommunityById(id),HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

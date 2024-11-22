@@ -9,7 +9,7 @@ import askapp.community.models.CommunityRequest;
 import askapp.community.repositories.CommunityMemberRepository;
 import askapp.community.repositories.CommunityRepository;
 import askapp.exeption.UserNotFoundException;
-import askapp.user.User;
+import askapp.user.models.User;
 import askapp.user.usersrepo.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -125,6 +125,11 @@ public class CommunityService {
         return users.stream()
                 .map(this::mapToUserINFO)
                 .collect(Collectors.toList());
+    }
+    public CommunityINFO getCommunityById(long id){
+        Community community=this.communityRepository.findById(id);
+
+        return mapToCommunityINFO(community);
     }
     private CommunityINFO mapToCommunityINFO(Community community) {
         return CommunityINFO.builder()

@@ -1,7 +1,6 @@
 package askapp.community.models;
 
 import askapp.file.File;
-import askapp.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
