@@ -1,12 +1,14 @@
 package askapp.user.usersrepo;
 
-import askapp.post.Models.ModelsINFO.LikeINFO;
-import askapp.user.User;
+import askapp.user.models.Student;
+import askapp.user.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+@Repository
 
-public interface StudRepo extends JpaRepository<LikeINFO.Student, Long>{
+public interface StudRepo extends JpaRepository<Student, Long>{
     Optional<User> findByEmail(String email);
 
 }

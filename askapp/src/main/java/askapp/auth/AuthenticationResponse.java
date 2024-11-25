@@ -1,6 +1,6 @@
 package askapp.auth;
 
-import askapp.user.Role;
+import askapp.user.models.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,4 +16,5 @@ public class AuthenticationResponse {
     private Role role;
     private String token;
     private String email;
+    private String id;
 }

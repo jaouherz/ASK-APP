@@ -1,28 +1,27 @@
 package askapp.post.Models;
 
-import askapp.user.User;
+import askapp.user.models.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+
 @Entity
 @Data
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private String description;
-    private Date date;
-
-
-
-
-
+    private LocalDateTime date;
     @ManyToOne
     @JoinColumn(name="user")
     private User username;
