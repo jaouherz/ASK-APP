@@ -1,7 +1,9 @@
 package askapp.post.Models;
 
 import askapp.community.Community;
+import askapp.post.Report.Report;
 import askapp.user.User;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,7 +23,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime date_ajout;
-   @ManyToOne
+    @ManyToOne
     private User whoposted ;
     @ManyToOne
     private Community community ;
@@ -34,4 +36,6 @@ public class Post {
 
     @OneToMany(mappedBy="post",cascade = CascadeType.REMOVE)
     private List<Comment> comments;
+
+
 }

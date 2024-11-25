@@ -18,6 +18,11 @@ public class Comment {
 
     private String description;
     private Date date;
+
+
+
+
+
     @ManyToOne
     @JoinColumn(name="user")
     private User username;

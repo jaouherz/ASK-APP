@@ -63,10 +63,12 @@ public class PostService {
             existingPost.setContent(updatedPost.getContent());
         }
 
-
-
         return postRepository.save(existingPost);
     }
+
+
+
+
 
     public void setPostVisibility(Long postId, boolean isVisible) throws EntityNotFoundException {
         Post post = postRepository.findById(postId)
@@ -106,4 +108,5 @@ public class PostService {
                 .commentList(commentService.getCommentByPost(post.getId()))
                 .build();
     }
+
 }

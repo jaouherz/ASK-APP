@@ -4,6 +4,7 @@ import askapp.config.JwtService;
 import askapp.email.EmailSender;
 import askapp.exeption.UserNotFoundException;
 import askapp.file.fileService;
+import askapp.post.Models.ModelsINFO.LikeINFO;
 import askapp.token.Token;
 import askapp.token.TokenRepository;
 import askapp.token.TokenType;
@@ -14,7 +15,6 @@ import askapp.user.usersrepo.StudRepo;
 import askapp.user.usersrepo.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.CloseableThreadContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -90,7 +90,7 @@ public class AuthenticationService {
                     .build();
             user = Profrep.save((Profesor) user);
         } else if (request.getRole() == Role.STUD) {
-            user = Student.builder()
+            user = LikeINFO.Student.builder()
                     .nom(request.getNom())
                     .prenom(request.getPrenom())
                     .email(request.getEmail())
@@ -103,7 +103,7 @@ public class AuthenticationService {
                     .password(passwordEncoder.encode(request.getPassword()))
                     .role(Role.STUD)
                     .build();
-            user = Studrep.save((Student) user);
+            user = Studrep.save((LikeINFO.Student) user);
         }
         var jwtToken = jwtService.generateToken(user);
         saveUserToken(user, jwtToken);
@@ -309,9 +309,9 @@ public class AuthenticationService {
         }
 
         // we have to add student filds here
-        if (user instanceof Student) {
+        if (user instanceof LikeINFO.Student) {
             if (newUser.getClassse() != null) {
-                ((Student) user).setClassse(newUser.getClassse());
+                ((LikeINFO.Student) user).setClassse(newUser.getClassse());
             }
         }
         //hedhi for profffesor
