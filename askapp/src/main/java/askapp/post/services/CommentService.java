@@ -1,13 +1,11 @@
 package askapp.post.services;
 
 import askapp.post.Models.Comment;
-import askapp.post.Models.Like;
 import askapp.post.Models.ModelsINFO.CommentINFO;
-import askapp.post.Models.ModelsINFO.LikeINFO;
 import askapp.post.Models.Post;
 import askapp.post.repositories.CommentRepository;
 import askapp.post.repositories.Postrepo;
-import askapp.user.User;
+import askapp.user.models.User;
 import askapp.user.usersrepo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

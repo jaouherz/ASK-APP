@@ -1,6 +1,6 @@
 package askapp.token;
 
-import askapp.user.User;
+import askapp.user.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

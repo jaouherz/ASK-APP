@@ -1,12 +1,11 @@
 package askapp.post.Models.ModelsINFO;
 
-import askapp.file.file;
+import askapp.file.File;
 import askapp.post.Models.typepost;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,5 +24,5 @@ public class PostINFO {
     private typepost type;
     private List<CommentINFO> commentList;
     private List<LikeINFO> likeList;
-    private List<file> fileList;
+    private List<File> fileList;
 }

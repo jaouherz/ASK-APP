@@ -147,4 +147,12 @@ public class PostController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
+    @GetMapping("/community/{id}")
+    public ResponseEntity<List<PostINFO>> getPostByCommunityId(@PathVariable("id") long communityID){
+        try {
+            return new ResponseEntity<List<PostINFO>>(this.postService.getPostsByCommunityId(communityID), HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
 }

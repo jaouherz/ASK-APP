@@ -1,16 +1,20 @@
 package askapp.post.services;
 
-import askapp.community.*;
+import askapp.community.models.Community;
+import askapp.community.models.CommunityMember;
+import askapp.community.repositories.CommunityMemberRepository;
+import askapp.community.repositories.CommunityRepository;
+import askapp.community.services.CommunityService;
 import askapp.exeption.UserNotFoundException;
-import askapp.file.file;
-import askapp.file.fileService;
+import askapp.file.File;
+import askapp.file.FileService;
 import askapp.post.Models.Post;
 import askapp.post.Models.PostRequest;
 import askapp.post.Models.ModelsINFO.PostINFO;
 import askapp.post.blacklist.Blacklist;
 import askapp.post.blacklist.BlacklistRepository;
 import askapp.post.repositories.Postrepo;
-import askapp.user.User;
+import askapp.user.models.User;
 import askapp.user.usersrepo.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
@@ -30,31 +35,27 @@ import static java.util.Arrays.stream;
 public class PostService {
 
     private final BlacklistRepository blacklistRepository;
-    private final Commemberrepo communityMemberrep;
+    private final CommunityMemberRepository communityMemberrep;
     private final Postrepo postRepository;
     private final UserRepository userRepository;
-    private final Commrepo commrepo;
-    private final ComService communityserv;
-    private final ComService comService;
+    private final CommunityRepository communityRepository;
+    private final CommunityService communityserv;
+    private final CommunityService communityService;
     @Autowired
     private LikeService likeService;
     @Autowired
     private CommentService commentService;
     @Autowired
-    fileService fileservice;
+    FileService fileservice;
 
     public PostINFO addPost(PostRequest request) throws Exception {
-        // Fetch user and community
         User whoposted = userRepository.findById(request.getWhoposted())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        Community community = commrepo.findById(request.getCommunity())
+        Community community = communityRepository.findById(request.getCommunity())
                 .orElseThrow(() -> new EntityNotFoundException("Community not found"));
-
-        // Filter content for blacklist words
         String filteredContent = filterContent(request.getContent());
 
-        // Create the post
         Post post = Post.builder()
                 .date_ajout(LocalDateTime.now())
                 .whoposted(whoposted)
@@ -64,15 +65,14 @@ public class PostService {
                 .type(request.getType())
                 .build();
 
-        // Save images for the post
-        List<MultipartFile> images = request.getImages();  // Get images from the request
+        List<MultipartFile> images = request.getImages();
         if (images != null && !images.isEmpty()) {
-            List<file> savedImages = new ArrayList<>();
+            List<File> savedImages = new ArrayList<>();
             for (MultipartFile image : images) {
-                file savedImage = fileservice.saveAttachment(image); // Save image using file service
-                savedImages.add(savedImage); // Add the image to a list (this won't modify the file entity)
+                File savedImage = fileservice.saveAttachment(image);
+                savedImages.add(savedImage);
             }
-            post.setImages(savedImages); // Assuming the post entity has a List<file> images attribute
+            post.setImages(savedImages);
         }
 
         return mapToPostinfo(postRepository.save(post));
@@ -136,7 +136,13 @@ public class PostService {
     public PostINFO getPostInfoById(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
-
         return mapToPostinfo(post);
+    }
+    public List<PostINFO> getPostsByCommunityId(long community_id){
+        Community community=communityRepository.findById(community_id);
+        List<Post> posts=postRepository.findByCommunity(community);
+        return posts.stream()
+                .map(this::mapToPostinfo)
+                .collect(Collectors.toList());
     }
 }

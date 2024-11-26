@@ -1,8 +1,8 @@
 package askapp.post.Models;
 
-import askapp.community.Community;
-import askapp.file.file;
-import askapp.user.User;
+import askapp.community.models.Community;
+import askapp.file.File;
+import askapp.user.models.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,13 +38,13 @@ public class Post {
     private List<Comment> comments;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "post_id")
-    private List<file> images = new ArrayList<>();
+    private List<File> images = new ArrayList<>();
 
-    public void setImages(List<file> images) {
+    public void setImages(List<File> images) {
         this.images = images;
     }
 
-    public List<file> getImages() {
+    public List<File> getImages() {
         return images;
     }
 }

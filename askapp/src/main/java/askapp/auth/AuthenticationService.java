@@ -3,18 +3,17 @@ package askapp.auth;
 import askapp.config.JwtService;
 import askapp.email.EmailSender;
 import askapp.exeption.UserNotFoundException;
-import askapp.file.fileService;
+import askapp.file.FileService;
 import askapp.token.Token;
 import askapp.token.TokenRepository;
 import askapp.token.TokenType;
-import askapp.user.*;
+import askapp.user.models.*;
 import askapp.user.usersrepo.AdminRepo;
 import askapp.user.usersrepo.ProfRepo;
 import askapp.user.usersrepo.StudRepo;
 import askapp.user.usersrepo.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.CloseableThreadContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,7 +34,7 @@ public class AuthenticationService {
     private final ProfRepo Profrep;
     private final StudRepo Studrep ;
 
-    private final fileService Fileservice;
+    private final FileService Fileservice;
 
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
@@ -246,14 +245,14 @@ public class AuthenticationService {
         return repository.findAll();
     }
 
-    public List<userinfo> findAllUsers1() throws Exception {
+    public List<Userinfo> findAllUsers1() throws Exception {
         List<User> users = repository.findAll();
         if (users.isEmpty()) {
             throw new UserNotFoundException("No users found.");
         }
-        List<userinfo> userinfos = new ArrayList<>();
+        List<Userinfo> Userinfos = new ArrayList<>();
         for (User user : users) {
-            userinfo userinfo = new userinfo();
+            Userinfo userinfo = new Userinfo();
             userinfo.setId(user.getId());
             userinfo.setNom(user.getNom());
             userinfo.setPrenom(user.getPrenom());
@@ -263,10 +262,10 @@ public class AuthenticationService {
             userinfo.setRole(user.getRole());
 
 
-            userinfos.add(userinfo);
+            Userinfos.add(userinfo);
         }
 
-        return userinfos;
+        return Userinfos;
     }
 
     @Transactional
@@ -342,11 +341,11 @@ public class AuthenticationService {
     }
 
 
-    public userinfo finduserById2(Long id) {
+    public Userinfo finduserById2(Long id) {
         User user3 = null;
 
         user3 = repository.findById(id).orElseThrow(() -> new UserNotFoundException("user by id" + id + "notfound"));
-        userinfo userinfo = new userinfo();
+        Userinfo userinfo = new Userinfo();
         userinfo.setId(user3.getId());
         userinfo.setNom(user3.getNom());
         userinfo.setPrenom(user3.getPrenom());
@@ -368,9 +367,9 @@ userinfo.setPdp(user3.getImage().getId());
 
     }
 
-    public userinfo finduserByemail2(String email) {
+    public Userinfo finduserByemail2(String email) {
         User user1 = repository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("user by id" + email + "notfound"));
-        userinfo user = new userinfo();
+        Userinfo user = new Userinfo();
         user.setNom(user1.getNom());
         user.setPrenom(user1.getPrenom());
         user.setEmail(user1.getEmail());
