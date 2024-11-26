@@ -154,5 +154,12 @@ public class CommunityService {
                 .image(user.getImage())
                 .build();
     }
+    public Boolean isMember(long idCommunity,long iduser){
+        CommunityMember communityMember=this.communityMemberRepository.findCommunityMemberByCommunityIdAndUserId(idCommunity,iduser);
+        if(communityMember!=null)
+                return true ;
+        else
+            return false;
+    }
 }
 

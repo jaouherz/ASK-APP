@@ -9,4 +9,5 @@ import java.util.List;
 public interface CommunityMemberRepository extends JpaRepository<CommunityMember, Long> {
     List<CommunityMember> findByCommunityId(Long communityId);
     List<CommunityMember> findByUserId(Long userId);
+    CommunityMember findCommunityMemberByCommunityIdAndUserId(long communityID,long userID);
 }

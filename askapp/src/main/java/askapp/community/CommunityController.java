@@ -143,4 +143,13 @@ public class CommunityController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    @GetMapping("isMember/{userid}/{communityid}")
+    public ResponseEntity<Boolean> isMember(@PathVariable(name = "communityid")long communityid,
+                                            @PathVariable(name = "userid")long userid){
+        try {
+            return new ResponseEntity(this.servicecom.isMember(communityid,userid),HttpStatus.OK);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }
