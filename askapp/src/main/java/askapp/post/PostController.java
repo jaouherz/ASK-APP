@@ -156,13 +156,12 @@ public class PostController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
-    @GetMapping("/postByImage")
-    public ResponseEntity<PostINFO>getPostByImage(@RequestBody File image){
+    @GetMapping("/postByImage/{id}")
+    public ResponseEntity<PostINFO>getPostByImage(@PathVariable String id){
         try{
-            return new ResponseEntity<PostINFO>(this.postService.getPostByFileImage(image),HttpStatus.OK);
-        } catch (RuntimeException e) {
+            return new ResponseEntity<PostINFO>(this.postService.getPostByFileImage(id),HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-
         }
     }
 

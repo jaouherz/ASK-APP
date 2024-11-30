@@ -1,6 +1,8 @@
 package askapp.community.repositories;
 
+import askapp.community.models.Community;
 import askapp.community.models.CommunityMember;
+import askapp.user.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

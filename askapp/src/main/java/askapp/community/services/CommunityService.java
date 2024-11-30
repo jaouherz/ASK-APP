@@ -12,6 +12,7 @@ import askapp.exeption.UserNotFoundException;
 import askapp.user.models.User;
 import askapp.user.usersrepo.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -95,7 +96,23 @@ public class CommunityService {
         community.getMembers().add(newMember);
         communityRepository.save(community);
     }
-    public List<CommunityINFO> getRandomCommunityNotMember(long id ){
+    @Transactional
+    public void deleteMemeber(Long communityId, Long userId) throws Exception {
+        Community community = communityRepository.findById(communityId)
+                .orElseThrow(() -> new EntityNotFoundException("Community not found"));
+        System.out.println("test1 ");
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        System.out.println("test0");
+
+        CommunityMember communityMember=communityMemberRepository.findCommunityMemberByCommunityIdAndUserId(community.getId(),user.getId());
+        if (communityMember==null) {
+            throw new Exception("User is not a member in the community");
+        }
+        System.out.println("test");
+        communityMemberRepository.delete(communityMember);
+    }
+        public List<CommunityINFO> getRandomCommunityNotMember(long id ){
         List<Community> communities=this.communityRepository.findNotMemberCommunity(id);
         return communities.stream()
                .map(this::mapToCommunityINFO)

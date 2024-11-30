@@ -126,6 +126,7 @@ public class PostService {
                 .date_ajout(post.getDate_ajout())
                 .whoposted(post.getWhoposted().getUsernamez())
                 .community(post.getCommunity().getTitle())
+                .communityID(post.getCommunity().getId())
                 .content(post.getContent())
                 .type(post.getType())
                 .likeList(likeService.getLikeByPost(post.getId()))
@@ -146,7 +147,8 @@ public class PostService {
                 .map(this::mapToPostinfo)
                 .collect(Collectors.toList());
     }
-    public PostINFO getPostByFileImage(File file){
+    public PostINFO getPostByFileImage(String fileID) throws Exception {
+        File file=fileservice.getAttachment(fileID);
         Post post=postRepository.findByImagesContaining(file);
         return this.mapToPostinfo(post);
     }
