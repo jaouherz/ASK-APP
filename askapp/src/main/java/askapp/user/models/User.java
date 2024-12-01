@@ -1,6 +1,8 @@
 package askapp.user.models;
 
 import askapp.file.File;
+import askapp.post.Models.Comment;
+import askapp.post.Models.Like;
 import askapp.token.Token;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -41,12 +43,12 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
     private List<Token> tokens;
-//
-//    @OneToMany(mappedBy="user", cascade = CascadeType.REMOVE)
-//    private List<Like> likes;
-//
-//    @OneToMany(mappedBy="user",cascade = CascadeType.REMOVE)
-//    private List<Comment> comments;
+
+    @OneToMany(mappedBy="user", cascade = CascadeType.REMOVE)
+    private List<Like> likes;
+
+    @OneToMany(mappedBy="user",cascade = CascadeType.REMOVE)
+    private List<Comment> comments;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
