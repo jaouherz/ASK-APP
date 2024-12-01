@@ -1,9 +1,5 @@
 package askapp.post.Report;
 
-import askapp.post.Models.Post;
-import askapp.post.Models.PostRequest;
-import askapp.post.repositories.Postrepo;
-import askapp.post.services.PostService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RequestMapping("/api/v1/report")
 @RestController
@@ -21,8 +16,6 @@ public class ReportController {
 
     private final ReportService reportService;
     private final ReportRepository reportRepository;
-    private final PostService postService;
-    private final Postrepo postrepo;
 
 
     @PostMapping("/create")
@@ -31,11 +24,16 @@ public class ReportController {
     }
 
     @GetMapping("/reports")
-    public ResponseEntity<List<RepINFO>> getrepports() {
-        return new ResponseEntity<List<RepINFO>>(this.reportService.getAll(), HttpStatus.OK);
+    public ResponseEntity<List<RepINFO>> getReports() {
+        List<RepINFO> reports = reportService.getAll();
+        if (reports.isEmpty()) {
+            System.out.println("No reports found.");
+        }
+        return new ResponseEntity<>(reports, HttpStatus.OK);
     }
 
-    @PutMapping("/ReportNonValide/{reportId}")
+
+    @PutMapping("/ReportValide/{reportId}")
     public ResponseEntity<String> ValiderReport(@PathVariable int reportId) {
 
 

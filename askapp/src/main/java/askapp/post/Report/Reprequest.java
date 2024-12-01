@@ -1,7 +1,6 @@
 package askapp.post.Report;
 
-import askapp.post.Models.Post;
-import jakarta.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,5 +17,5 @@ public class Reprequest {
 
     private String Cause;
     private Long post;
-    private String etat;
+
 }

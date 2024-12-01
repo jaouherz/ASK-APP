@@ -20,6 +20,7 @@ public class Report {
     private String Cause;
     private LocalDateTime date_ajout;
     private String etat;
+
    @ManyToOne
    @JoinColumn(name="post")
     private Post post;

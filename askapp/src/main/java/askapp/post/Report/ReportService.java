@@ -67,16 +67,17 @@ public class ReportService {
 
 
 
-    private RepINFO mapToReportinfo(Report report) {
+    public RepINFO mapToReportinfo(Report report) {
         return RepINFO.builder()
                 .id(report.getId())
                 .date_ajout(report.getDate_ajout())
                 .post(report.getPost().getId())
                 .whoposted(report.getPost().getWhoposted().getUsername())
                 .cause(report.getCause())
+                .etat(report.getEtat())
                 .build();
     }
-    List<RepINFO> getAll(){
+    public List<RepINFO> getAll(){
         return this.reportRepository.findAll().stream()
                 .map(this::mapToReportinfo)
                 .collect(Collectors.toList());

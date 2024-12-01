@@ -1,6 +1,6 @@
 package askapp.post.Models.ModelsINFO;
 
-import askapp.user.User;
+import askapp.user.models.User;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
