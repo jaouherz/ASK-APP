@@ -1,6 +1,7 @@
 package askapp.post;
 
 import askapp.exeption.UserNotFoundException;
+import askapp.file.File;
 import askapp.post.Models.Comment;
 import askapp.post.Models.ModelsINFO.CommentINFO;
 import askapp.post.Models.ModelsINFO.PostINFO;
@@ -155,4 +156,13 @@ public class PostController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
+    @GetMapping("/postByImage/{id}")
+    public ResponseEntity<PostINFO>getPostByImage(@PathVariable String id){
+        try{
+            return new ResponseEntity<PostINFO>(this.postService.getPostByFileImage(id),HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

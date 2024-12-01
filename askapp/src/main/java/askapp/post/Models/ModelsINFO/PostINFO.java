@@ -20,6 +20,7 @@ public class PostINFO {
     private LocalDateTime date_ajout;
     private String whoposted;
     private String community;
+    private long communityID;
     private String content;
     private typepost type;
     private List<CommentINFO> commentList;
