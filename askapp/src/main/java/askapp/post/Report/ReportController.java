@@ -26,11 +26,24 @@ public class ReportController {
     @GetMapping("/reports")
     public ResponseEntity<List<RepINFO>> getReports() {
         List<RepINFO> reports = reportService.getAll();
+
         if (reports.isEmpty()) {
             System.out.println("No reports found.");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+        reports.sort((r1, r2) -> {
+            if ("Trait".equals(r1.getEtat()) && !"Traité".equals(r2.getEtat())) {
+                return 1;
+            }
+            if (!"Traité".equals(r1.getEtat()) && "Traité".equals(r2.getEtat())) {
+                return -1;
+            }
+            return 0;
+        });
+
         return new ResponseEntity<>(reports, HttpStatus.OK);
     }
+
 
 
     @PutMapping("/ReportValide/{reportId}")
@@ -43,7 +56,8 @@ public class ReportController {
 
             reportService.ValiderReport(reportId);
 
-            return ResponseEntity.ok("Report with ID " + reportId + " has been successfully set to Traité and post visibility set to false.");
+            return ResponseEntity.noContent().build();
+
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Report with ID " + reportId + " not found.");
@@ -57,10 +71,10 @@ public class ReportController {
   @PutMapping("/ReportNonValider/{reportId}")
     public ResponseEntity<String> NonValiderReport(@PathVariable int reportId) {
         try {
-            Report report = reportRepository.findById(reportId)
+            reportRepository.findById(reportId)
                     .orElseThrow(() -> new EntityNotFoundException("Report with ID " + reportId + " not found"));
             reportService.NonValiderReport(reportId);
-            return ResponseEntity.ok("Report with ID " + reportId + " has been successfully set to Traité and post visibility set to false.");
+             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Report with ID " + reportId + " not found.");
@@ -70,20 +84,20 @@ public class ReportController {
         }
     }
 
-    @DeleteMapping("/DeleteReport/{reportId}")
-    public ResponseEntity<String> DeleteReport(@PathVariable int reportId) {
-        try {
-            Report report = reportRepository.findById(reportId)
-                    .orElseThrow(() -> new EntityNotFoundException("Report with ID " + reportId + " not found"));
-            reportRepository.delete(report);
-            return ResponseEntity.ok("Report with ID " + reportId + " has been successfully deleted");
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Report with ID " + reportId + " not found.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An unexpected error occurred.");
-        }
-    }
+//    @DeleteMapping("/DeleteReport/{reportId}")
+//    public ResponseEntity<String> DeleteReport(@PathVariable int reportId) {
+//        try {
+//             Report report = reportRepository.findById(reportId)
+//                    .orElseThrow(() -> new EntityNotFoundException("Report with ID " + reportId + " not found"));
+//            reportRepository.delete(report);
+//             return ResponseEntity.noContent().build();
+//        } catch (EntityNotFoundException e) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+//                    .body("Report with ID " + reportId + " not found.");
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body("An unexpected error occurred.");
+//        }
+//    }
 
 }

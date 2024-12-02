@@ -45,7 +45,7 @@ public class ReportService {
                 .orElseThrow(() -> new EntityNotFoundException("Report with ID " + reportId + " not found."));
         Post post= report.getPost();
         report.setEtat("Traité");
-        post.setIsvisible(true);
+        post.setIsvisible(false);
         reportRepository.save(report);
         postRepository.save(post);
 
@@ -57,11 +57,12 @@ public class ReportService {
                 .orElseThrow(() -> new EntityNotFoundException("Report with ID " + reportId + " not found."));
         Post post= report.getPost();
         report.setEtat("Traité");
-        post.setIsvisible(false);
+        post.setIsvisible(true);
         reportRepository.save(report);
         postRepository.save(post);
 
     }
+
 
 
 
