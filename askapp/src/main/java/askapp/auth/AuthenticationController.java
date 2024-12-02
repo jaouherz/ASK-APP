@@ -68,7 +68,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(serviceuser.authenticate(request));
     }
 
-    @GetMapping("/find/{id}")
+    @GetMapping("username/{id}")
     public ResponseEntity<Userinfo> getUserById(@PathVariable("id") Long id) {
         Userinfo user = serviceuser.finduserById2(id);
         return new ResponseEntity<>(user, HttpStatus.OK);

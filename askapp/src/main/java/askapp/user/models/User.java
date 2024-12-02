@@ -44,11 +44,7 @@ public class User implements UserDetails {
     @JsonManagedReference
     private List<Token> tokens;
 
-    @OneToMany(mappedBy="user", cascade = CascadeType.REMOVE)
-    private List<Like> likes;
 
-    @OneToMany(mappedBy="user",cascade = CascadeType.REMOVE)
-    private List<Comment> comments;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
