@@ -110,8 +110,12 @@ public class PostService {
                 .stream()
                 .map(CommunityMember::getCommunity)
                 .collect(Collectors.toList());
+
         List<Post> posts = postRepository.findByCommunityIn(communities);
+
+        // Sort the posts by date_ajout in descending order
         return posts.stream()
+                .sorted((post1, post2) -> post2.getDate_ajout().compareTo(post1.getDate_ajout()))
                 .map(this::mapToPostinfo)
                 .collect(Collectors.toList());
     }
@@ -120,8 +124,9 @@ public class PostService {
         return PostINFO.builder()
                 .id(post.getId())
                 .date_ajout(post.getDate_ajout())
-                .whoposted(post.getWhoposted().getNom())
+                .whoposted(post.getWhoposted().getUsernamez())
                 .community(post.getCommunity().getTitle())
+                .communityID(post.getCommunity().getId())
                 .content(post.getContent())
                 .type(post.getType())
                 .likeList(likeService.getLikeByPost(post.getId()))
@@ -138,7 +143,13 @@ public class PostService {
         Community community=communityRepository.findById(community_id);
         List<Post> posts=postRepository.findByCommunity(community);
         return posts.stream()
+                .sorted((post1, post2) -> post2.getDate_ajout().compareTo(post1.getDate_ajout()))
                 .map(this::mapToPostinfo)
                 .collect(Collectors.toList());
+    }
+    public PostINFO getPostByFileImage(String fileID) throws Exception {
+        File file=fileservice.getAttachment(fileID);
+        Post post=postRepository.findByImagesContaining(file);
+        return this.mapToPostinfo(post);
     }
 }

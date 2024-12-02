@@ -18,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/com")
@@ -28,7 +27,6 @@ public class CommunityController {
     private final CommunityService servicecom;
     private final FileService Fileservice;
     private final CommunityRepository communityRepository;
-    private final CommunityMemberRepository communityMemberRepository;
 
     @PostMapping("/addcom")
     public ResponseEntity<Map<String, String>> add(
@@ -47,7 +45,6 @@ public class CommunityController {
 
             servicecom.addCommunity(request);
 
-            // Create a response map
             Map<String, String> response = new HashMap<>();
             response.put("message", "Comment successfully added");
 
@@ -90,14 +87,7 @@ public class CommunityController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    @GetMapping("/community/{id}")
-    public ResponseEntity<CommunityINFO> getCommunityById(@PathVariable Long id) {
-        try {
-            return new ResponseEntity<CommunityINFO>(servicecom.getCommunityById(id),HttpStatus.OK);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteCommunity(@PathVariable Long id) {
         try {
@@ -108,15 +98,23 @@ public class CommunityController {
         }
     }
     @PostMapping("/addMember")
-    public ResponseEntity<String> addMemberToCommunity(
-            @RequestParam Long communityId,
-            @RequestParam Long userId
+    public ResponseEntity<String> addMemberToCommunity(@RequestParam Long communityId, @RequestParam Long userId
     ) {
         try {
             servicecom.addMemberToCommunity(communityId, userId);
             return ResponseEntity.ok("User added to community");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error adding user to community");
+        }
+    }
+    @DeleteMapping("/deleteMember")
+    public ResponseEntity<String> deleteMemberToCommunity(@RequestParam Long communityId, @RequestParam Long userId
+    ) {
+        try {
+            servicecom.deleteMemeber(communityId, userId);
+            return ResponseEntity.ok("User delete it successfully from community");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error deleting user from community :\n"+e.getMessage());
         }
     }
     @GetMapping("/members/{communityId}")
@@ -135,11 +133,30 @@ public class CommunityController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @GetMapping("/community/{id}")
+    public ResponseEntity<CommunityINFO> getCommunityById(@PathVariable Long id) {
+        try {
+            return new ResponseEntity<CommunityINFO>(servicecom.getCommunityById(id),HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     @GetMapping("bestSuggestion/{id}")
     public ResponseEntity<CommunityINFO> BestSuggestion(@PathVariable Long id) {
         try {
-            return ResponseEntity.ok(this.servicecom.getBestSuggestion(id));
+            return new ResponseEntity<CommunityINFO>(this.servicecom.getBestSuggestion(id),HttpStatus.OK);
         } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @GetMapping("isMember/{userid}/{communityid}")
+    public ResponseEntity<Boolean> isMember(@PathVariable(name = "communityid")long communityid,
+                                            @PathVariable(name = "userid")long userid){
+        try {
+            return new ResponseEntity(this.servicecom.isMember(communityid,userid),HttpStatus.OK);
+        }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
