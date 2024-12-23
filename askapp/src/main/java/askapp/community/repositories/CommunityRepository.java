@@ -13,4 +13,7 @@ public interface CommunityRepository extends JpaRepository<Community, Long> {
    List<Community> findNotMemberCommunity(@Param("id") long id);
    Optional< Community> findByTitle(String title);
    Community findById(long id);
+   @Query(value = "SELECT * FROM community WHERE id  IN (SELECT community_id FROM community_member WHERE user_id = :id )", nativeQuery = true)
+   List<Community> getCommunityByUserId(@Param("id")long id);
+
 }

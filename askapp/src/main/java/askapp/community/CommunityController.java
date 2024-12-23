@@ -160,4 +160,12 @@ public class CommunityController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    @GetMapping("communityByUserId/{id}")
+    public ResponseEntity<List<CommunityINFO>> communityByUserId(@PathVariable(name = "id") long id){
+        try {
+            return new ResponseEntity<List<CommunityINFO>>(this.servicecom.getCommunitiesByUser(id),HttpStatus.OK);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

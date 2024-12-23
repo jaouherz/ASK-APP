@@ -6,10 +6,13 @@ import askapp.post.Models.ModelsINFO.PostINFO;
 import askapp.post.Models.Post;
 import askapp.post.repositories.LikeRepository;
 import askapp.post.repositories.Postrepo;
+import askapp.user.models.User;
+import askapp.user.usersrepo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,18 +21,24 @@ public class LikeService {
     LikeRepository likeRepository;
     @Autowired
     Postrepo postrepo;
-    public Like addLike(Like like){
+    @Autowired
+    UserRepository userRepository;
+    public LikeINFO pressLike(long postID,long userID){
 
-        Post post = postrepo.findById(like.getPost().getId()).orElseThrow(() -> new RuntimeException("Post not found"));
-
+        Post post = postrepo.findById(postID).orElseThrow(() -> new RuntimeException("Post not found"));
+        User user=userRepository.findById(userID).get();
+        Like like= this.likeRepository.findByUsernameAndAndPost(user,post);
+        if(like!=null){
+            this.likeRepository.delete(like);
+            return  mapToLikeinfo(like);
+        }
+        like=new Like();
+        like.setPost(post);
+        like.setUsername(user);
+        like=likeRepository.save(like);
         post.getLikes().add(like);
-
-        likeRepository.save(like);
-
         postrepo.save(post);
-
-        return likeRepository.save(like);
-
+        return mapToLikeinfo(like);
     }
     public List<LikeINFO> getLikeByPost(long postid){
         List<Like> likes=likeRepository.findByPost(postrepo.findById(postid));
@@ -41,7 +50,7 @@ public class LikeService {
     private LikeINFO mapToLikeinfo(Like like) {
         return LikeINFO.builder()
                 .id(like.getId())
-                .username(like.getUsername().getUsername())
+                .userID(like.getUsername().getId())
                 .postid(like.getPost().getId())
                 .build();
     }

@@ -4,6 +4,7 @@ import askapp.exeption.UserNotFoundException;
 import askapp.file.File;
 import askapp.post.Models.Comment;
 import askapp.post.Models.ModelsINFO.CommentINFO;
+import askapp.post.Models.ModelsINFO.LikeINFO;
 import askapp.post.Models.ModelsINFO.PostINFO;
 import askapp.post.Models.Post;
 import askapp.post.Models.PostRequest;
@@ -11,6 +12,7 @@ import askapp.post.Models.typepost;
 import askapp.post.repositories.Postrepo;
 import askapp.post.services.CommentService;
 import askapp.post.services.Commentrequest;
+import askapp.post.services.LikeService;
 import askapp.post.services.PostService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,8 @@ public class PostController {
     private final Postrepo postrepo;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private LikeService likeService;
 
     @PostMapping("/addpost")
     public ResponseEntity<PostINFO> addPost(
@@ -41,16 +45,14 @@ public class PostController {
             @RequestParam(required = false) List<MultipartFile> images) {
 
         try {
-            // Build the PostRequest object
             PostRequest postRequest = PostRequest.builder()
                     .content(content)
                     .whoposted(whoposted)
                     .community(community)
                     .type(type)
-                    .images(images)  // Add the images to the request
+                    .images(images)
                     .build();
 
-            // Pass the request to the service to handle the business logic
             PostINFO savedPost = postService.addPost(postRequest);
 
             return ResponseEntity.ok(savedPost);
@@ -106,16 +108,16 @@ public class PostController {
         }
     }
     @PostMapping("/addcomment")
-    public ResponseEntity<Comment> createPost(@RequestBody Commentrequest request) {
+    public ResponseEntity<CommentINFO> createPost(@RequestBody Commentrequest request) {
         try {
-            Comment comment = commentService.addComment(request);
-            return new ResponseEntity(" comment successfully add it ", HttpStatus.CREATED);
+            return new ResponseEntity<CommentINFO>(commentService.addComment(request), HttpStatus.CREATED);
         } catch (UserNotFoundException  e) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @PutMapping("/updatecomment/{commentId}")
     public ResponseEntity<CommentINFO> updateComment(@PathVariable Long commentId, @RequestBody Commentrequest updatedRequest) {
         try {
@@ -137,6 +139,14 @@ public class PostController {
             return new ResponseEntity<>("Comment not found", HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PostMapping("/pressLike")
+    public ResponseEntity<LikeINFO> pressLike(@RequestBody LikeINFO likeINFO){
+        try {
+            return new ResponseEntity<LikeINFO>(this.likeService.pressLike(likeINFO.getPostid(),likeINFO.getUserID()),HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity( e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @GetMapping("/{postId}/comments")
@@ -164,5 +174,6 @@ public class PostController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
+
 
 }

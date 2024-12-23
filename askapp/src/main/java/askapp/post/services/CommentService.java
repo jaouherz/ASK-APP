@@ -22,7 +22,7 @@ public class CommentService {
     Postrepo postrepo;
     @Autowired
     UserRepository userRepository;
-    public Comment addComment(Commentrequest commentRequest) throws Exception {
+    public CommentINFO addComment(Commentrequest commentRequest) throws Exception {
         Post post = postrepo.findById(commentRequest.getPost())
                 .orElseThrow(() -> new RuntimeException("Post not found"));
 
@@ -41,7 +41,7 @@ public class CommentService {
         commentRepository.save(comment);
         postrepo.save(post);
 
-        return comment;
+        return mapToCommentinfo(comment);
     }
     public CommentINFO updateComment(Long commentId, Commentrequest updatedCommentRequest) throws Exception {
         Comment comment = commentRepository.findById(commentId)

@@ -148,6 +148,12 @@ public class CommunityService {
 
         return mapToCommunityINFO(community);
     }
+    public List<CommunityINFO> getCommunitiesByUser(long userId){
+        List<Community> communities=this.communityRepository.getCommunityByUserId(userId);
+        return communities.stream()
+                .map(this::mapToCommunityINFO)
+                .collect(Collectors.toList());
+    }
     private CommunityINFO mapToCommunityINFO(Community community) {
         return CommunityINFO.builder()
                 .id(community.getId())

@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @Builder
 public class LikeINFO {
     private long id;
-    private String username;
+    private long userID;
     private long postid;
 
     @Entity
