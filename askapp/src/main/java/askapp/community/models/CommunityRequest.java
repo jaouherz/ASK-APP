@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommunityRequest {
-
-
     private String title;
     private String description;
     private Long usercreate;

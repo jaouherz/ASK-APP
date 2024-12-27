@@ -13,9 +13,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Reprequest {
-
-
+    private long whoreported;
+    private String description;
     private String Cause;
-    private Long post;
+    private long post;
 
 }

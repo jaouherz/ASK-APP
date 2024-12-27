@@ -47,7 +47,7 @@ public class ReportController {
 
 
     @PutMapping("/ReportValide/{reportId}")
-    public ResponseEntity<String> ValiderReport(@PathVariable int reportId) {
+    public ResponseEntity<String> ValiderReport(@PathVariable long reportId) {
 
 
         try {
@@ -69,7 +69,7 @@ public class ReportController {
 
 
   @PutMapping("/ReportNonValider/{reportId}")
-    public ResponseEntity<String> NonValiderReport(@PathVariable int reportId) {
+    public ResponseEntity<String> NonValiderReport(@PathVariable long reportId) {
         try {
             reportRepository.findById(reportId)
                     .orElseThrow(() -> new EntityNotFoundException("Report with ID " + reportId + " not found"));
@@ -84,20 +84,20 @@ public class ReportController {
         }
     }
 
-//    @DeleteMapping("/DeleteReport/{reportId}")
-//    public ResponseEntity<String> DeleteReport(@PathVariable int reportId) {
-//        try {
-//             Report report = reportRepository.findById(reportId)
-//                    .orElseThrow(() -> new EntityNotFoundException("Report with ID " + reportId + " not found"));
-//            reportRepository.delete(report);
-//             return ResponseEntity.noContent().build();
-//        } catch (EntityNotFoundException e) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                    .body("Report with ID " + reportId + " not found.");
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body("An unexpected error occurred.");
-//        }
-//    }
+    @DeleteMapping("/DeleteReport/{reportId}")
+    public ResponseEntity<String> DeleteReport(@PathVariable long reportId) {
+        try {
+             Report report = reportRepository.findById(reportId)
+                    .orElseThrow(() -> new EntityNotFoundException("Report with ID " + reportId + " not found"));
+            reportRepository.delete(report);
+             return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Report with ID " + reportId + " not found.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An unexpected error occurred.");
+        }
+    }
 
 }

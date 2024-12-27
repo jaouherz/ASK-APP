@@ -95,11 +95,9 @@ public class AuthenticationController {
     }
 
     @GetMapping("/users")
-
-
     public ResponseEntity<List<User>> getAllusers() {
-        List<User> userr = serviceuser.findAllUsers();
-        return new ResponseEntity<>(userr, HttpStatus.OK);
+        List<User> user = serviceuser.findAllUsers();
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping("/users2")

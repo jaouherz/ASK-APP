@@ -4,6 +4,8 @@ import askapp.post.Models.ModelsINFO.PostINFO;
 import askapp.post.Models.Post;
 import askapp.post.Models.PostRequest;
 import askapp.post.repositories.Postrepo;
+import askapp.user.models.User;
+import askapp.user.usersrepo.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,16 +21,22 @@ public class ReportService {
     private ReportRepository reportRepository;
     @Autowired
     private  Postrepo postRepository;
-
+    @Autowired
+    private UserRepository userRepository;
 
     public RepINFO addReport(Reprequest request) {
         Post post = postRepository.findById(request.getPost())
                 .orElseThrow(() -> new EntityNotFoundException("Post not found"));
+        User user= userRepository.findById(request.getWhoreported())
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
         Report report = Report.builder()
                 .date_ajout(LocalDateTime.now())
                 .post(post)
+                .user(user)
                 .Cause(request.getCause())
                 .etat("NonTraité")
+                .description(request.getDescription())
                 .build();
 
         reportRepository.save(report) ;
@@ -39,7 +47,7 @@ public class ReportService {
 
 
 
-    public void ValiderReport(int reportId) {
+    public void ValiderReport(long reportId) {
 
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new EntityNotFoundException("Report with ID " + reportId + " not found."));
@@ -51,7 +59,7 @@ public class ReportService {
 
     }
 
-    public void NonValiderReport(int reportId) {
+    public void NonValiderReport(long reportId) {
 
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new EntityNotFoundException("Report with ID " + reportId + " not found."));
@@ -62,12 +70,6 @@ public class ReportService {
         postRepository.save(post);
 
     }
-
-
-
-
-
-
     public RepINFO mapToReportinfo(Report report) {
         return RepINFO.builder()
                 .id(report.getId())
@@ -76,6 +78,8 @@ public class ReportService {
                 .whoposted(report.getPost().getWhoposted().getUsername())
                 .cause(report.getCause())
                 .etat(report.getEtat())
+                .description(report.getDescription())
+                .whoreported(report.getUser().getEmail())
                 .build();
     }
     public List<RepINFO> getAll(){

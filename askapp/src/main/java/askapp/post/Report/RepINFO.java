@@ -19,5 +19,6 @@ public class RepINFO {
     private String whoposted;
     private Long post;
     private String etat;
-
+    private String description;
+    private String whoreported;
 }
