@@ -35,7 +35,7 @@ public class ReportService {
                 .post(post)
                 .user(user)
                 .Cause(request.getCause())
-                .etat("NonTraité")
+                .etat("Stand-by")
                 .description(request.getDescription())
                 .build();
 
@@ -52,23 +52,25 @@ public class ReportService {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new EntityNotFoundException("Report with ID " + reportId + " not found."));
         Post post= report.getPost();
-        report.setEtat("Traité");
+        List<Report> reports=reportRepository.findReportByPost(post);
+        for(Report report1:reports){
+            report1.setEtat("Banned");
+            reportRepository.save(report1);
+        }
         post.setIsvisible(false);
-        reportRepository.save(report);
         postRepository.save(post);
 
     }
 
     public void NonValiderReport(long reportId) {
-
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new EntityNotFoundException("Report with ID " + reportId + " not found."));
         Post post= report.getPost();
-        report.setEtat("Traité");
-        post.setIsvisible(true);
-        reportRepository.save(report);
-        postRepository.save(post);
-
+        List<Report> reports=reportRepository.findReportByPost(post);
+        for(Report report1:reports){
+            report1.setEtat("Fake");
+            reportRepository.save(report1);
+        }
     }
     public RepINFO mapToReportinfo(Report report) {
         return RepINFO.builder()
