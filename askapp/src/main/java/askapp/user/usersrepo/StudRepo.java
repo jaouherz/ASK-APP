@@ -10,5 +10,5 @@ import java.util.Optional;
 
 public interface StudRepo extends JpaRepository<Student, Long>{
     Optional<User> findByEmail(String email);
-
+    Student findById(long id);
 }

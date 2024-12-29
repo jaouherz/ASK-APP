@@ -16,18 +16,23 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.apache.commons.text.similarity.LevenshteinDistance;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CommunityService {
-    private final CommunityRepository communityRepository;
-    private final UserRepository userRepository;
+    @Autowired
+    private  CommunityRepository communityRepository;
+    @Autowired
+    private  UserRepository userRepository;
+    private final LevenshteinDistance levenshteinDistance;
+    public CommunityService(){
+        this.levenshteinDistance = new LevenshteinDistance();
+    }
     @Autowired
     CommunityMemberRepository communityMemberRepository;
     public Community addCommunity(CommunityRequest request) throws Exception {
@@ -50,7 +55,12 @@ public class CommunityService {
         this.addMemberToCommunity(community1.getId(),request.getUsercreate());
         return community1;
     }
-
+    public List<CommunityINFO> getAll(){
+        List<Community> communities=communityRepository.findAll();
+        return communities.stream()
+                .map(this::mapToCommunityINFO)
+                .collect(Collectors.toList());
+    }
 
 
 
@@ -154,6 +164,30 @@ public class CommunityService {
                 .map(this::mapToCommunityINFO)
                 .collect(Collectors.toList());
     }
+    public List<CommunityINFO> getCommunitySearch(String search) {
+        List<Community> communities = communityRepository.findAll();
+        Map<Community, Integer> similarityMap = new HashMap<>();
+        for (Community community : communities) {
+            int distance = levenshteinDistance.apply(search, community.getTitle());
+            similarityMap.put(community, distance);
+        }
+
+        List<Community> fuzzyResults = new ArrayList<>(similarityMap.keySet());
+        fuzzyResults.sort(Comparator.comparingInt(similarityMap::get));
+
+        return fuzzyResults.stream()
+                .map(this::mapToCommunityINFO)
+                .collect(Collectors.toList());
+    }
+    public Boolean isMember(long idCommunity,long iduser){
+        CommunityMember communityMember=this.communityMemberRepository.findCommunityMemberByCommunityIdAndUserId(idCommunity,iduser);
+        if(communityMember!=null)
+            return true ;
+        else
+            return false;
+    }
+
+
     private CommunityINFO mapToCommunityINFO(Community community) {
         return CommunityINFO.builder()
                 .id(community.getId())
@@ -165,6 +199,8 @@ public class CommunityService {
                 .image(community.getImage())
                 .build();
     }
+
+
     private Userinfo mapToUserINFO(User user) {
         return Userinfo.builder()
                 .id(user.getId())
@@ -177,12 +213,8 @@ public class CommunityService {
                 .image(user.getImage())
                 .build();
     }
-    public Boolean isMember(long idCommunity,long iduser){
-        CommunityMember communityMember=this.communityMemberRepository.findCommunityMemberByCommunityIdAndUserId(idCommunity,iduser);
-        if(communityMember!=null)
-                return true ;
-        else
-            return false;
-    }
+
+
+
 }
 
