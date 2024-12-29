@@ -195,4 +195,12 @@ public class PostController {
         Map<String, Long> counts = postService.getPostCountsByYearAndMonth();
         return ResponseEntity.ok(counts);
     }
+    @GetMapping("/userposts/{userid}")
+    public ResponseEntity<List<PostINFO>> getuserPosts(@PathVariable("userid") long userId){
+        try {
+            return new ResponseEntity<List<PostINFO>>(this.postService.getUserPosts(userId), HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
 }
