@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/api/v1/post")
 @RestController
@@ -175,5 +176,23 @@ public class PostController {
         }
     }
 
+    @GetMapping("/counts")
+    public Map<String, Long> getCommunityPostCounts() {
+        return postService.getPostCountsByCommunity();
+    }
+    @GetMapping("/top-users")
+    public Map<String, Long> getTopUsers() {
+        return postService.getPostCountsByUser();
+    }
+    @GetMapping("/post-counts-by-year")
+    public ResponseEntity<Map<Integer, Long>> getPostCountsByYear() {
+        Map<Integer, Long> counts = postService.getPostCountsByYear();
+        return ResponseEntity.ok(counts);
+    }
 
+    @GetMapping("/post-counts-by-year-and-month")
+    public ResponseEntity<Map<String, Long>> getPostCountsByYearAndMonth() {
+        Map<String, Long> counts = postService.getPostCountsByYearAndMonth();
+        return ResponseEntity.ok(counts);
+    }
 }

@@ -218,7 +218,7 @@ public class AuthenticationService {
         saveUserToken(user, jwtToken);
 
 
-        String resetPasswordLink = "http://localhost:4200/mdpoublie?token=" + jwtToken;
+        String resetPasswordLink = "http://localhost:4200/forgetpass?token=" + jwtToken;
 
 
         EmailSender emailSender = new EmailSender();

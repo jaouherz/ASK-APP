@@ -172,11 +172,6 @@ public class AuthenticationController {
     }
 
 
-    @GetMapping("/employee/total")
-    public Long getTotalUsers() {
-
-        return repo.count();
-    }
 
 }
 

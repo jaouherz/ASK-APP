@@ -23,9 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
@@ -151,5 +149,60 @@ public class PostService {
         File file=fileservice.getAttachment(fileID);
         Post post=postRepository.findByImagesContaining(file);
         return this.mapToPostinfo(post);
+    }
+    public Map<String, Long> getPostCountsByCommunity() {
+        // Get all posts
+        List<Post> posts = postRepository.findAll();
+
+        // Create a map to store community names and their corresponding post counts
+        Map<String, Long> communityPostCounts = new HashMap<>();
+
+        // Iterate over posts to count posts for each community
+        for (Post post : posts) {
+            String communityName = post.getCommunity().getTitle();
+            communityPostCounts.put(communityName, communityPostCounts.getOrDefault(communityName, 0L) + 1);
+        }
+
+        return communityPostCounts;
+    }
+    public Map<String, Long> getPostCountsByUser() {
+        List<Post> posts = postRepository.findAll();  // Fetch all posts from the database
+
+        Map<String, Long> userPostCounts = posts.stream()
+                .collect(Collectors.groupingBy(post -> post.getWhoposted().getUsernamez(), Collectors.counting()));
+
+        return userPostCounts.entrySet()
+                .stream()
+                .sorted((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()))
+                .limit(10)  // Get the top 10 users
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new));  // Maintain insertion order
+    }
+    public Map<Integer, Long> getPostCountsByYear() {
+        List<Post> posts = postRepository.findAll();
+
+        // Group posts by year and count
+        return posts.stream()
+                .collect(Collectors.groupingBy(
+                        post -> post.getDate_ajout().getYear(), // Group by year
+                        Collectors.counting() // Count posts per year
+                ));
+    }
+
+    public Map<String, Long> getPostCountsByYearAndMonth() {
+        List<Post> posts = postRepository.findAll();
+
+        // Group posts by year and month and count
+        return posts.stream()
+                .collect(Collectors.groupingBy(
+                        post -> {
+                            LocalDateTime date = post.getDate_ajout();
+                            return date.getYear() + "-" + String.format("%02d", date.getMonthValue());
+                        },
+                        Collectors.counting()
+                ));
     }
 }

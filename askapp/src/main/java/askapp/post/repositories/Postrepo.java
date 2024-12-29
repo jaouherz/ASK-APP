@@ -13,4 +13,5 @@ public interface Postrepo extends JpaRepository<Post, Long> {
     Post findByImagesContaining(File file);
     List<Post> findByCommunity(Community community);
     List<Post> findByCommunityIn(List<Community> communities);
+
 }
