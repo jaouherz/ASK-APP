@@ -293,9 +293,6 @@ public class AuthenticationService {
             user.setBio(newUser.getBio());
         }
         if (newUser.getImage() != null) {
-
-
-
             user.setImage(newUser.getImage());
 
         }
