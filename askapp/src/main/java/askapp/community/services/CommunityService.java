@@ -18,9 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -183,6 +181,21 @@ public class CommunityService {
                 return true ;
         else
             return false;
+    }
+    public Map<String, Long> getCommunityMemberCounts() {
+        // Fetch all community members
+        List<CommunityMember> communityMembers = communityMemberRepository.findAll();
+        // Create a map to store the community and their member count
+        Map<String, Long> communityMemberCountMap = new HashMap<>();
+        // Iterate over the community members and count the number of members per community
+        for (CommunityMember member : communityMembers) {
+            Community community = member.getCommunity();
+            // If the community is already in the map, increment its member count
+            communityMemberCountMap.put(community.getTitle(),
+                    communityMemberCountMap.getOrDefault(community.getTitle(), 0L) + 1);
+        }
+        // Return the map containing community names and their respective member counts
+        return communityMemberCountMap;
     }
 }
 

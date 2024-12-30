@@ -168,4 +168,24 @@ public class CommunityController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    @GetMapping({"/community-count"})
+    public ResponseEntity<Long> getCommunityCount() {
+        try {
+            long count = this.communityRepository.count();
+            return ResponseEntity.ok(count);
+        } catch (Exception var3) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping({"/community-member-counts"})
+    public ResponseEntity<Map<String, Long>> getCommunityMemberCounts() {
+        try {
+            Map<String, Long> communityMemberCounts = this.servicecom.getCommunityMemberCounts();
+            return communityMemberCounts.isEmpty() ? ResponseEntity.status(HttpStatus.NO_CONTENT).build() : new ResponseEntity(communityMemberCounts, HttpStatus.OK);
+        } catch (Exception var2) {
+            Exception e = var2;
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }}
 }
