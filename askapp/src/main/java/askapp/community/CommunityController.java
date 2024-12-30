@@ -44,7 +44,7 @@ public class CommunityController {
                     .build();
 
             servicecom.addCommunity(request);
-
+            System.out.println(pdp);
             Map<String, String> response = new HashMap<>();
             response.put("message", "Comment successfully added");
 
@@ -166,6 +166,35 @@ public class CommunityController {
             return new ResponseEntity<List<CommunityINFO>>(this.servicecom.getCommunitiesByUser(id),HttpStatus.OK);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @GetMapping("/community-count")
+    public ResponseEntity<Long> getCommunityCount() {
+        try {
+            long count = communityRepository.count();  // Count the total number of communities
+
+            return ResponseEntity.ok(count);  // Return the count in the response
+        }  catch (Exception e) {
+            // In case of any error, return internal server error
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
+    @GetMapping("/community-member-counts")
+    public ResponseEntity<Map<String, Long>> getCommunityMemberCounts() {
+        try {
+            // Fetch the community member counts
+            Map<String, Long> communityMemberCounts = servicecom.getCommunityMemberCounts();
+
+            if (communityMemberCounts.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // Return 204 if no data
+            }
+
+            return new ResponseEntity<>(communityMemberCounts, HttpStatus.OK); // Return the map of counts
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // Handle errors
         }
     }
 }

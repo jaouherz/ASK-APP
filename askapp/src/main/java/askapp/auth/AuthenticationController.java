@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -171,7 +172,20 @@ public class AuthenticationController {
 
     }
 
-
-
+    @GetMapping("/user-login-count")
+    public Map<String, Long> getUserLoginCount() {
+        return authenticationService.getUserLoginCount();
+    }
+    @GetMapping("/user-count")
+    public ResponseEntity<Long> getUserCount() {
+        try {
+            // Get the total number of users from the repository
+            long userCount = repo.count();
+            return ResponseEntity.ok(userCount);  // Return the count as response
+        } catch (Exception e) {
+            // In case of any error, return internal server error
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }
 

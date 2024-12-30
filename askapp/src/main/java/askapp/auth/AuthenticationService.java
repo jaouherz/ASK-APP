@@ -21,10 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -377,6 +374,25 @@ userinfo.setPdp(user3.getImage().getId());
         user.setRole(user1.getRole());
 
         return user;
+    }
+    public Map<String, Long> getUserLoginCount() {
+        // Get all tokens from the Token table
+        List<Token> allTokens = tokenRepository.findAll();
+
+        // Create a map to hold the count of logins per user
+        Map<String, Long> loginCountMap = new HashMap<>();
+
+        // Iterate through the tokens and count logins per user
+        for (Token token : allTokens) {
+              // Only consider valid tokens
+                String username = token.getUser().getUsernamez();
+                // Count the number of logins per user (not just counting tokens)
+                loginCountMap.put(username, loginCountMap.getOrDefault(username, 0L) + 1);
+
+        }
+
+        // Return the login count for each user
+        return loginCountMap;
     }
 
 }
