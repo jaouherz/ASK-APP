@@ -16,6 +16,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.apache.commons.text.similarity.LevenshteinDistance;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -24,8 +25,14 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class CommunityService {
-    private final CommunityRepository communityRepository;
-    private final UserRepository userRepository;
+    @Autowired
+    private  CommunityRepository communityRepository;
+    @Autowired
+    private  UserRepository userRepository;
+    private final LevenshteinDistance levenshteinDistance;
+    public CommunityService(){
+        this.levenshteinDistance = new LevenshteinDistance();
+    }
     @Autowired
     CommunityMemberRepository communityMemberRepository;
     public Community addCommunity(CommunityRequest request) throws Exception {
@@ -48,7 +55,12 @@ public class CommunityService {
         this.addMemberToCommunity(community1.getId(),request.getUsercreate());
         return community1;
     }
-
+    public List<CommunityINFO> getAll(){
+        List<Community> communities=communityRepository.findAll();
+        return communities.stream()
+                .map(this::mapToCommunityINFO)
+                .collect(Collectors.toList());
+    }
 
 
 
@@ -110,11 +122,11 @@ public class CommunityService {
         System.out.println("test");
         communityMemberRepository.delete(communityMember);
     }
-        public List<CommunityINFO> getRandomCommunityNotMember(long id ){
+    public List<CommunityINFO> getRandomCommunityNotMember(long id ){
         List<Community> communities=this.communityRepository.findNotMemberCommunity(id);
         return communities.stream()
-               .map(this::mapToCommunityINFO)
-               .collect(Collectors.toList());
+                .map(this::mapToCommunityINFO)
+                .collect(Collectors.toList());
     }
     public CommunityINFO getBestSuggestion(long id){
         List<Community> communities=this.communityRepository.findNotMemberCommunity(id);
@@ -130,14 +142,20 @@ public class CommunityService {
         }
         return this.mapToCommunityINFO(bestsuggestion);
     }
-    public List<Userinfo> getCommunityMembers(long id){
+    public List<Userinfo> getCommunityMembers(long id) {
         List<CommunityMember> members = communityMemberRepository.findByCommunityId(id);
-        System.out.println(members.get(0).getCommunity().getId());
-        List<User> users=new ArrayList<>();
-        for (CommunityMember member:members){
-            users.add(member.getUser());
+
+        List<User> users = new ArrayList<>();
+        for (CommunityMember member : members) {
+            if (member.getCommunity() != null && member.getCommunity().getId() != null) {
+                users.add(member.getUser());
+            } else {
+                users.add(null);
+            }
         }
+
         return users.stream()
+                .filter(Objects::nonNull) // Optional: remove null entries from the list
                 .map(this::mapToUserINFO)
                 .collect(Collectors.toList());
     }
@@ -152,6 +170,30 @@ public class CommunityService {
                 .map(this::mapToCommunityINFO)
                 .collect(Collectors.toList());
     }
+    public List<CommunityINFO> getCommunitySearch(String search) {
+        List<Community> communities = communityRepository.findAll();
+        Map<Community, Integer> similarityMap = new HashMap<>();
+        for (Community community : communities) {
+            int distance = levenshteinDistance.apply(search, community.getTitle());
+            similarityMap.put(community, distance);
+        }
+
+        List<Community> fuzzyResults = new ArrayList<>(similarityMap.keySet());
+        fuzzyResults.sort(Comparator.comparingInt(similarityMap::get));
+
+        return fuzzyResults.stream()
+                .map(this::mapToCommunityINFO)
+                .collect(Collectors.toList());
+    }
+    public Boolean isMember(long idCommunity,long iduser){
+        CommunityMember communityMember=this.communityMemberRepository.findCommunityMemberByCommunityIdAndUserId(idCommunity,iduser);
+        if(communityMember!=null)
+            return true ;
+        else
+            return false;
+    }
+
+
     private CommunityINFO mapToCommunityINFO(Community community) {
         return CommunityINFO.builder()
                 .id(community.getId())
@@ -163,6 +205,8 @@ public class CommunityService {
                 .image(community.getImage())
                 .build();
     }
+
+
     private Userinfo mapToUserINFO(User user) {
         return Userinfo.builder()
                 .id(user.getId())
@@ -175,13 +219,7 @@ public class CommunityService {
                 .image(user.getImage())
                 .build();
     }
-    public Boolean isMember(long idCommunity,long iduser){
-        CommunityMember communityMember=this.communityMemberRepository.findCommunityMemberByCommunityIdAndUserId(idCommunity,iduser);
-        if(communityMember!=null)
-                return true ;
-        else
-            return false;
-    }
+
     public Map<String, Long> getCommunityMemberCounts() {
         // Fetch all community members
         List<CommunityMember> communityMembers = communityMemberRepository.findAll();
@@ -197,5 +235,5 @@ public class CommunityService {
         // Return the map containing community names and their respective member counts
         return communityMemberCountMap;
     }
-}
 
+}

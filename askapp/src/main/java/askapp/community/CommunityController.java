@@ -79,10 +79,9 @@ public class CommunityController {
         }
     }
     @GetMapping("/communities")
-    public ResponseEntity<List<Community>> getAllCommunities() {
+    public ResponseEntity<List<CommunityINFO>> getAllCommunities() {
         try {
-            List<Community> communities = communityRepository.findAll();
-            return ResponseEntity.ok(communities);
+            return ResponseEntity.ok(servicecom.getAll());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -187,5 +186,14 @@ public class CommunityController {
             Exception e = var2;
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }}
+        }
+    }
+    @GetMapping("search/{search}")
+    public  ResponseEntity<List<CommunityINFO>> getCommunitySearch(@PathVariable(name = "search") String search){
+        try {
+            return new ResponseEntity<List<CommunityINFO>>(this.servicecom.getCommunitySearch(search),HttpStatus.OK);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }
