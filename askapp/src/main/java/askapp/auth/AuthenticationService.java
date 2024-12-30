@@ -289,20 +289,15 @@ public class AuthenticationService {
         if (newUser.getPrenom() != null) {
             user.setPrenom(newUser.getPrenom());
         }
-
+        if (newUser.getBio() != null) {
+            user.setBio(newUser.getBio());
+        }
         if (newUser.getImage() != null) {
 
 
 
             user.setImage(newUser.getImage());
 
-        }
-        if (newUser.getEmail() != null) {
-            var existingEmail = repository.findByEmail(newUser.getEmail());
-            if (existingEmail.isPresent() && !existingEmail.get().getId().equals(id)) {
-                throw new Exception("The email is already in use by another user.");
-            }
-            user.setEmail(newUser.getEmail());
         }
 
         // we have to add student filds here
