@@ -111,7 +111,6 @@ public class PostService {
 
         List<Post> posts = postRepository.findByCommunityIn(communities);
 
-        // Sort the posts by date_ajout in descending order
         return posts.stream()
                 .sorted((post1, post2) -> post2.getDate_ajout().compareTo(post1.getDate_ajout()))
                 .map(this::mapToPostinfo)
@@ -204,5 +203,12 @@ public class PostService {
                         },
                         Collectors.counting()
                 ));
+    }
+    public List<PostINFO> getUserPosts(long id){
+        List<Post> posts=this.postRepository.findByWhopostedId(id);
+        return posts.stream()
+                .sorted((post1, post2) -> post2.getDate_ajout().compareTo(post1.getDate_ajout()))
+                .map(this::mapToPostinfo)
+                .collect(Collectors.toList());
     }
 }

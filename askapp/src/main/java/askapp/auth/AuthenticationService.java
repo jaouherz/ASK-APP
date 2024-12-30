@@ -352,7 +352,7 @@ public class AuthenticationService {
         userinfo.setPassword(user3.getPassword());
         userinfo.setRole(user3.getRole());
         userinfo.setIsactive(user3.isIsactive());
-userinfo.setPdp(user3.getImage().getId());
+        userinfo.setPdp(user3.getImage().getId());
 
 
         return userinfo;
