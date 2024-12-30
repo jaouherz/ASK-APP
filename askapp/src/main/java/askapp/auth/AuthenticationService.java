@@ -291,9 +291,6 @@ public class AuthenticationService {
         }
 
         if (newUser.getImage() != null) {
-
-
-
             user.setImage(newUser.getImage());
 
         }

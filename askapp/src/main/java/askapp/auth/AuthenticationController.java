@@ -121,7 +121,7 @@ public class AuthenticationController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<User> updateUser(
-            @PathVariable Long id,
+                                           @PathVariable Long id,
                                            @RequestParam(required = false) String nom,
                                            @RequestParam(required = false) String prenom,
                                            @RequestParam(required = false) String email,
@@ -144,8 +144,6 @@ public class AuthenticationController {
                     .email(email)
                     .bio(bio)
                     .image(pdp)
-
-
                     .classse(classse)
                     .password(password)
                     .build();
