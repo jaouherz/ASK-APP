@@ -21,8 +21,11 @@ public class Notification {
 
     @ManyToOne
     private Post post;
+
+
     @ManyToOne
     private User whoreact;
+
     @ManyToOne
     private User user;
     @Enumerated(EnumType.STRING)
