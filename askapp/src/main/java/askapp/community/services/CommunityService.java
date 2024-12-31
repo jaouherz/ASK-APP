@@ -50,6 +50,7 @@ public class CommunityService {
                 .usercreate(createdby)
                 .description(request.getDescription())
                 .active(true)
+                .image(request.getImage())
                 .build();
         Community community1 = this.communityRepository.save(com);
         this.addMemberToCommunity(community1.getId(),request.getUsercreate());
