@@ -27,33 +27,10 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<registerresponse> register(
-            @RequestParam(required = false) String nom,
-            @RequestParam(required = false) String prenom,
-            @RequestParam(required = false) String email,
-
-            @RequestParam(required = false) String password,
-
-            @RequestParam(required = false) Role role,
-
-            @RequestParam(required = false) String classse,
-            @RequestParam(required = false) String bio,
-
-            @RequestParam(required = false) MultipartFile image){
+            @RequestBody RegisterRequest request)
+          {
     try {
-        if (role == null) {
-            role = Role.STUD;
-        }
-        File pdp = Fileservice.saveAttachment(image);
-        RegisterRequest request = RegisterRequest.builder()
-                .nom(nom)
-                .prenom(prenom)
-                .email(email)
-                .bio(bio)
-                .image(pdp)
-                .classse(classse)
-                .password(password)
-                .role(role)
-                .build();
+
         registerresponse saved = authenticationService.register(request);
         return ResponseEntity.ok(saved);
     } catch (Exception e) {
