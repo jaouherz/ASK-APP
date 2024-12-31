@@ -292,7 +292,9 @@ public class AuthenticationService {
         if (newUser.getUsernamez() != null) {
             user.setUsernamez(newUser.getUsernamez());
         }
-
+        if (newUser.getBio() != null) {
+            user.setBio(newUser.getBio());
+        }
         if (newUser.getImage() != null) {
             user.setImage(newUser.getImage());
 
