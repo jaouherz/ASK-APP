@@ -8,6 +8,7 @@ import askapp.community.services.CommunityService;
 import askapp.exeption.UserNotFoundException;
 import askapp.file.File;
 import askapp.file.FileService;
+import askapp.post.Models.ModelsINFO.CommentINFO;
 import askapp.post.Models.Post;
 import askapp.post.Models.PostRequest;
 import askapp.post.Models.ModelsINFO.PostINFO;
@@ -26,7 +27,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.stream;
 
 @Service
 @RequiredArgsConstructor
@@ -127,8 +127,11 @@ public class PostService {
                 .content(post.getContent())
                 .type(post.getType())
                 .likeList(likeService.getLikeByPost(post.getId()))
-                .commentList(commentService.getCommentByPost(post.getId()))
-                .fileList(post.getImages())
+                .commentList(
+                        commentService.getCommentByPost(post.getId()).stream()
+                                .sorted(Comparator.comparing(CommentINFO::getDate).reversed())
+                                .collect(Collectors.toList())
+                )                .fileList(post.getImages())
                 .build();
     }
     public PostINFO getPostInfoById(Long postId) {

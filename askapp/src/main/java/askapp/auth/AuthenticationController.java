@@ -125,6 +125,7 @@ public class AuthenticationController {
                                            @RequestParam(required = false) String nom,
                                            @RequestParam(required = false) String prenom,
                                            @RequestParam(required = false) String email,
+                                           @RequestParam(required = false) String usernamez,
 
                                            @RequestParam(required = false) String password,
 
@@ -145,6 +146,7 @@ public class AuthenticationController {
                     .bio(bio)
                     .image(pdp)
                     .classse(classse)
+                    .usernamez(usernamez)
                     .password(password)
                     .build();
             User saved = authenticationService.updateUser(id,request);

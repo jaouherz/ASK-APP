@@ -155,7 +155,7 @@ public class CommunityService {
         }
 
         return users.stream()
-                .filter(Objects::nonNull) // Optional: remove null entries from the list
+                .filter(Objects::nonNull)
                 .map(this::mapToUserINFO)
                 .collect(Collectors.toList());
     }
@@ -221,18 +221,13 @@ public class CommunityService {
     }
 
     public Map<String, Long> getCommunityMemberCounts() {
-        // Fetch all community members
         List<CommunityMember> communityMembers = communityMemberRepository.findAll();
-        // Create a map to store the community and their member count
         Map<String, Long> communityMemberCountMap = new HashMap<>();
-        // Iterate over the community members and count the number of members per community
         for (CommunityMember member : communityMembers) {
             Community community = member.getCommunity();
-            // If the community is already in the map, increment its member count
             communityMemberCountMap.put(community.getTitle(),
                     communityMemberCountMap.getOrDefault(community.getTitle(), 0L) + 1);
         }
-        // Return the map containing community names and their respective member counts
         return communityMemberCountMap;
     }
 

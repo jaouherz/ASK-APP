@@ -289,6 +289,9 @@ public class AuthenticationService {
         if (newUser.getPrenom() != null) {
             user.setPrenom(newUser.getPrenom());
         }
+        if (newUser.getUsernamez() != null) {
+            user.setUsernamez(newUser.getUsernamez());
+        }
 
         if (newUser.getImage() != null) {
             user.setImage(newUser.getImage());
