@@ -400,5 +400,55 @@ public class AuthenticationService {
         // Return the login count for each user
         return loginCountMap;
     }
+    public registerresponse registerAdmin(RegisterRequest request) throws Exception {
+        User user = null;
+
+        var existingUser = repository.findByEmail(request.getEmail());
+        if (existingUser.isPresent()) {
+            return registerresponse.builder().msg("The user already exists.").build();
+        }
+
+        String username = request.getUsernamez();
+        if (username == null || username.isEmpty()) {
+            username = generateUniqueUsername(request.getRole());
+        }
+
+        var existingUsername = repository.findByUsernamez(username);
+        if (existingUsername.isPresent()) {
+            return registerresponse.builder().msg("The username already exists.").build();
+        }
+        user = Admin.builder()
+                .nom(request.getNom())
+                .prenom(request.getPrenom())
+                .email(request.getEmail())
+                .bio(request.getBio())
+                .usernamez(username)
+                .isactive(true)
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.ADMIN)
+                .build();
+        user = Adminrep.save((Admin) user);
+
+        var jwtToken = jwtService.generateToken(user);
+        saveUserToken(user, jwtToken);
+        EmailSender emailSender = new EmailSender();
+        String subject = "Thank You for Subscribing";
+        String body = "Hello " + user.getNom() + ",<br><br>" +
+                "Thank you for subscribing! Your account has been successfully created.<br><br>" +
+                "Please log in to access your personal space:<br><br>" +
+                "<a href=\"http://localhost:4200/login\"><button style=\"background-color:#008CBA;color:white;padding:12px 20px;border:none;border-radius:4px;\">Log In</button></a><br><br>" +
+                "Best regards,<br>The Support Team.";
+        emailSender.sendEmail(user.getEmail(), subject, body);
+        return registerresponse.builder()
+                .token(jwtToken)
+                .nom(user.getNom())
+                .email(user.getEmail())
+                .prenom(user.getPrenom())
+
+                .password(user.getPassword())
+                .role(user.getRole())
+                .build();
+    }
+
 
 }
