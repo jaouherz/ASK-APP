@@ -611,26 +611,30 @@
             <hr class="sidebar-divider my-0" />
             <ul class="navbar-nav text-light" id="accordionSidebar">
                 <li class="nav-item">
-                    <a class="nav-link " href="http://localhost:4200/adminIndex/dashboard" >
+                    <a class="nav-link " href="http://localhost:4200/adminIndex/dashboard">
                         <i class="fas fa-tachometer-alt"></i><span>Index</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link " href="http://localhost:4200/adminIndex/tablepanel" >
+                    <a class="nav-link " href="http://localhost:4200/adminIndex/tablepanel">
                         <i class="fas fa-user"></i><span>Users Table</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link " href="http://localhost:4200/adminIndex/reportTable" >
+                    <a class="nav-link active">
+                        <i class="fas fa-tachometer-alt"></i><span>Add New Admin</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="http://localhost:4200/adminIndex/reportTable">
                         <i class="fas fa-user"></i><span>Request List Table</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" >
+                    <a class="nav-link " href="/api/v1/blacklist/all">
                         <i class="fas fa-table"></i><span>BlackList</span>
                     </a>
                 </li>
-
                 <li class="nav-item">
                     <a class="nav-link " href="/api/v1/blacklist/addWord" >
                         <i class="fas fa-tachometer-alt"></i><span>Add a black word</span>
@@ -647,65 +651,55 @@
     <div class="container-fluid" style="margin-top: 2em">
         <div class="card shadow">
             <div class="card-header py-3">
-                <p class="text-primary m-0 fw-bold">BlackList</p>
+                <p class="text-primary m-0 fw-bold">Add a New Admin</p>
             </div>
             <div class="card-body">
                 <div class="row">
-
                     <div class="col-md-6">
-                        <p class="my-5">
-                            <a href="/api/v1/blacklist/addWord" class="btn btn-primary">
-                                <i class="fas fa-user-plus ml-2">Add a Word To The Blacklist </i></a>
+                        <p>
+                            <a href="http://localhost:4200/adminIndex/tablepanel" class="btn btn-primary">
+                                <i class="fas fa-arrow-left"></i> Back to Users List
+                            </a>
                         </p>
                     </div>
                 </div>
 
-                <!-- Table Content -->
-                <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
-                    <div th:if="${blackList == null || #lists.isEmpty(blackList)}">
-                        <h2>No record found!</h2>
-                    </div>
-                    <div th:if="${blackList != null && !#lists.isEmpty(blackList)}">
-                        <table class="table my-0" id="dataTable">
-                            <thead>
-                            <tr>
-                                <th>Id</th>
-                                <th>Word</th>
-                                <th>Date</th>
-                                <th>Delete</th>
-                                <th>Edit</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="blackword : ${blackList}">
-                                <td th:text="${blackword.id}"></td>
-                                <td th:text="${blackword.word}"></td>
-                                <td th:text="${#dates.format(blackword.date, 'dd/MM/yy')}"></td>
-                                <td>
-                                    <a th:href="@{/api/v1/blacklist/delete/{id}(id=${blackword.id})}" class="btn btn-danger">
-                                        <i class="fas fa-trash"></i> Delete
-                                    </a>
-                                </td>
-                                <td>
-                                    <a th:href="@{/api/v1/blacklist/edit/{id}(id=${blackword.id})}" class="btn btn-primary">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </a>
-                                </td>
-                            </tr>
-                            </tbody>
-                            <tfoot>
-                            <tr>
-                                <td><strong>Id</strong></td>
-                                <td><strong>Word</strong></td>
-                                <td><strong>Delete</strong></td>
-                                <td><strong>Edit</strong></td>
-                            </tr>
-                            </tfoot>
-                        </table>
+                <div class="container">
+                    <div class="card">
+                        <div class="card-body">
+                            <form th:action="@{/api/v1/admin/save}" th:object="${user}" method="post" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label for="nom" class="col-form-label">First Name</label>
+                                    <input type="text" th:field="*{nom}" class="form-control" id="nom" placeholder="First Name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="prenom" class="col-form-label">Last Name</label>
+                                    <input type="text" th:field="*{prenom}" class="form-control" id="prenom" placeholder="Last Name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="usernamez" class="col-form-label">Username</label>
+                                    <input type="text" th:field="*{usernamez}" class="form-control" id="usernamez" placeholder="Username" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email" class="col-form-label">Email</label>
+                                    <input type="email" th:field="*{email}" class="form-control" id="email" placeholder="Email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password" class="col-form-label">Password</label>
+                                    <input type="password" th:field="*{password}" class="form-control" id="password" placeholder="Password" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bio" class="col-form-label">Bio</label>
+                                    <textarea th:field="*{bio}" class="form-control" id="bio" placeholder="Bio"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">Add Admin</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
     <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
@@ -714,5 +708,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
 <script src="../static/assets/js/script.min.js"></script>
 </body>
+
 
 </html>

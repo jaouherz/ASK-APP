@@ -193,7 +193,14 @@ public class CommunityService {
         else
             return false;
     }
-
+    public void banCommunity(Long id) throws Exception {
+        Community existingCommunity = communityRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Community not found"));
+        if(existingCommunity!=null){
+            existingCommunity.setActive(false);
+        }
+        communityRepository.save(existingCommunity);
+    }
 
     private CommunityINFO mapToCommunityINFO(Community community) {
         return CommunityINFO.builder()
