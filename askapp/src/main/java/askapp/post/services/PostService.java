@@ -1,10 +1,12 @@
 package askapp.post.services;
 
+import askapp.auth.Userinfo;
 import askapp.community.models.Community;
 import askapp.community.models.CommunityMember;
 import askapp.community.repositories.CommunityMemberRepository;
 import askapp.community.repositories.CommunityRepository;
 import askapp.community.services.CommunityService;
+import askapp.email.EmailSender;
 import askapp.exeption.UserNotFoundException;
 import askapp.file.File;
 import askapp.file.FileService;
@@ -72,9 +74,33 @@ public class PostService {
             }
             post.setImages(savedImages);
         }
-
+        sendEmailToCommunityMembers(community, post);
         return mapToPostinfo(postRepository.save(post));
     }
+    private void sendEmailToCommunityMembers(Community community, Post post) throws Exception {
+        List<Userinfo> members = communityService.getCommunityMembers(community.getId());
+        EmailSender emailSender = new EmailSender();
+
+        String subject = "New Post in " + community.getTitle();
+        String body = "Hello,<br><br>" +
+                "There is a new post in the community: <b>" + community.getTitle() + "</b><br><br>" +
+                "Post Content: <br><i>" + post.getContent() + "</i><br><br>" +
+                "Click the link below to check it out:<br>" +
+                "<a href=\"http://localhost:4200/community/" + community.getId() + "\">Go to Community</a><br><br>" +
+                "Best regards,<br>The Community Team.";
+
+        for (Userinfo member : members) {
+            if (member.getEmail() != null && !member.getEmail().isEmpty()) {
+                try {
+                    emailSender.sendEmail(member.getEmail(), subject, body);
+                } catch (Exception e) {
+                    // Log the error and continue with the next member
+                    System.err.println("Failed to send email to " + member.getEmail() + ": " + e.getMessage());
+                }
+            }
+        }
+    }
+
     public Post updatePost(Long postId, PostRequest updatedPost) throws Exception {
         Post existingPost = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("Post not found"));

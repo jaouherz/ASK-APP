@@ -1,6 +1,7 @@
 package askapp.notification.service;
 
 import askapp.auth.Userinfo;
+import askapp.email.EmailSender;
 import askapp.exeption.UserNotFoundException;
 import askapp.notification.models.Notification;
 import askapp.notification.models.NotificationINFO;
@@ -43,24 +44,63 @@ public class NotificationService {
                 .map(this::mapToNotificationInfo)
                 .collect(Collectors.toList());
     }
-    public Boolean addNotification(NotificationRequest notificationRequest){
+    public Boolean addNotification(NotificationRequest notificationRequest)throws Exception {
+        // Fetch the user who reacted
         User whoreacted = userRepository.findById(notificationRequest.getWhoreacted())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
-        Post post=this.postrepo.findById(notificationRequest.getPost())
-        .orElseThrow(() -> new UserNotFoundException("Post not found"));
-        if(notificationRequest.getWhoreacted()!=post.getWhoposted().getId()){
-            Notification notification=new Notification();
+
+        // Fetch the post associated with the notification
+        Post post = this.postrepo.findById(notificationRequest.getPost())
+                .orElseThrow(() -> new UserNotFoundException("Post not found"));
+
+        // Check if the user who reacted is not the same as the user who posted
+        if (notificationRequest.getWhoreacted() != post.getWhoposted().getId()) {
+            // Create a new notification
+            Notification notification = new Notification();
             notification.setDate(new Date());
             notification.setPost(post);
             notification.setUser(post.getWhoposted());
             notification.setWhoreact(whoreacted);
             notification.setType(notificationRequest.getType());
             notification.setSeen(false);
+
+            // Save the notification to the database
             this.notificationRepository.save(notification);
+
+            // Send email to the user who posted the content
+            sendEmailNotification(post.getWhoposted(), whoreacted, post);
+
             return true;
         }
+
         return false;
     }
+    public void sendEmailNotification(User postOwner, User whoreacted, Post post) throws Exception {
+        EmailSender emailSender = new EmailSender();
+
+        // Subject of the email
+        String subject = "New Notification: Reaction to Your Post";
+
+        // Body of the email
+        String body = "Hello " + postOwner.getNom() + ",<br><br>" +
+                "You have a new notification!<br><br>" +
+                "User " + whoreacted.getNom() + " has reacted to your post:<br><br>" +
+                "<b>" + post.getContent() + "</b><br><br>" +
+                "Click the link below to view the post:<br>" +
+                "<a href=\"http://localhost:4200/post/" + post.getId() + "\">View Post</a><br><br>" +
+                "Best regards,<br>The Community Team.";
+
+        try {
+            // Send the email to the post owner
+            emailSender.sendEmail(postOwner.getEmail(), subject, body);
+        } catch (Exception e) {
+            // Log the error and handle it (e.g., send an email failure alert or retry mechanism)
+            System.err.println("Failed to send notification email to " + postOwner.getEmail() + ": " + e.getMessage());
+            // You can also throw the exception to notify that something went wrong
+            throw new Exception("Failed to send notification email", e);
+        }
+    }
+
     public NotificationINFO updateSeen(long id){
         Notification notification=this.notificationRepository.findById(id) ;
         notification.setSeen(true);
