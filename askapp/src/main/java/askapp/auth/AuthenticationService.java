@@ -311,24 +311,17 @@ public class AuthenticationService {
             user.setEmail(newUser.getEmail());
         }
 
-        // we have to add student filds here
         if (user instanceof Student) {
             if (newUser.getClassse() != null) {
                 ((Student) user).setClassse(newUser.getClassse());
             }
         }
-        //hedhi for profffesor
         if (user instanceof Profesor) {
-           // if () {
 
-           //}
         }
-        //hedhi for admin
 
         if (user instanceof Admin ) {
-            // if () {
 
-            //}
         }
 
         if (newUser.getUsernamez() != null) {
@@ -382,22 +375,16 @@ public class AuthenticationService {
         return user;
     }
     public Map<String, Long> getUserLoginCount() {
-        // Get all tokens from the Token table
         List<Token> allTokens = tokenRepository.findAll();
 
-        // Create a map to hold the count of logins per user
         Map<String, Long> loginCountMap = new HashMap<>();
 
-        // Iterate through the tokens and count logins per user
         for (Token token : allTokens) {
-              // Only consider valid tokens
                 String username = token.getUser().getUsernamez();
-                // Count the number of logins per user (not just counting tokens)
                 loginCountMap.put(username, loginCountMap.getOrDefault(username, 0L) + 1);
 
         }
 
-        // Return the login count for each user
         return loginCountMap;
     }
     public registerresponse registerAdmin(RegisterRequest request) throws Exception {

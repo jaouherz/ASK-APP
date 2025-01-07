@@ -179,10 +179,10 @@ public class CommunityService {
             similarityMap.put(community, distance);
         }
 
-        List<Community> fuzzyResults = new ArrayList<>(similarityMap.keySet());
-        fuzzyResults.sort(Comparator.comparingInt(similarityMap::get));
+        List<Community> cummunities2 = new ArrayList<>(similarityMap.keySet());
+        cummunities2.sort(Comparator.comparingInt(similarityMap::get));
 
-        return fuzzyResults.stream()
+        return cummunities2.stream()
                 .map(this::mapToCommunityINFO)
                 .collect(Collectors.toList());
     }

@@ -156,11 +156,9 @@ public class AuthenticationController {
     @GetMapping("/user-count")
     public ResponseEntity<Long> getUserCount() {
         try {
-            // Get the total number of users from the repository
             long userCount = repo.count();
-            return ResponseEntity.ok(userCount);  // Return the count as response
+            return ResponseEntity.ok(userCount);
         } catch (Exception e) {
-            // In case of any error, return internal server error
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

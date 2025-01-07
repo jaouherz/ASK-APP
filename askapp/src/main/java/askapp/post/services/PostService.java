@@ -94,7 +94,6 @@ public class PostService {
                 try {
                     emailSender.sendEmail(member.getEmail(), subject, body);
                 } catch (Exception e) {
-                    // Log the error and continue with the next member
                     System.err.println("Failed to send email to " + member.getEmail() + ": " + e.getMessage());
                 }
             }
@@ -179,13 +178,10 @@ public class PostService {
         return this.mapToPostinfo(post);
     }
     public Map<String, Long> getPostCountsByCommunity() {
-        // Get all posts
         List<Post> posts = postRepository.findAll();
 
-        // Create a map to store community names and their corresponding post counts
         Map<String, Long> communityPostCounts = new HashMap<>();
 
-        // Iterate over posts to count posts for each community
         for (Post post : posts) {
             String communityName = post.getCommunity().getTitle();
             communityPostCounts.put(communityName, communityPostCounts.getOrDefault(communityName, 0L) + 1);
@@ -194,7 +190,7 @@ public class PostService {
         return communityPostCounts;
     }
     public Map<String, Long> getPostCountsByUser() {
-        List<Post> posts = postRepository.findAll();  // Fetch all posts from the database
+        List<Post> posts = postRepository.findAll();
 
         Map<String, Long> userPostCounts = posts.stream()
                 .collect(Collectors.groupingBy(post -> post.getWhoposted().getUsernamez(), Collectors.counting()));
@@ -202,28 +198,26 @@ public class PostService {
         return userPostCounts.entrySet()
                 .stream()
                 .sorted((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()))
-                .limit(10)  // Get the top 10 users
+                .limit(10)
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
                         (e1, e2) -> e1,
-                        LinkedHashMap::new));  // Maintain insertion order
+                        LinkedHashMap::new));
     }
     public Map<Integer, Long> getPostCountsByYear() {
         List<Post> posts = postRepository.findAll();
 
-        // Group posts by year and count
         return posts.stream()
                 .collect(Collectors.groupingBy(
-                        post -> post.getDate_ajout().getYear(), // Group by year
-                        Collectors.counting() // Count posts per year
+                        post -> post.getDate_ajout().getYear(),
+                        Collectors.counting()
                 ));
     }
 
     public Map<String, Long> getPostCountsByYearAndMonth() {
         List<Post> posts = postRepository.findAll();
 
-        // Group posts by year and month and count
         return posts.stream()
                 .collect(Collectors.groupingBy(
                         post -> {
